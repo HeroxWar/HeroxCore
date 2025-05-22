@@ -1,8 +1,7 @@
 package com.HeroxWar.HeroxCore.SoundGesture;
 
-import jdk.jfr.internal.LogLevel;
-import jdk.jfr.internal.LogTag;
-import jdk.jfr.internal.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +9,8 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Method;
 
 public class SoundType {
+
+    private static final Logger logger = Logger.getLogger(SoundType.class.getName());
 
     private final boolean enabled;
     private final Sound sound;
@@ -45,7 +46,7 @@ public class SoundType {
             try {
                 throw new Exception("!!!!!!!! THIS IS A CONFIGURATION ERROR !!!!!!!!!!!! The volume of the sound '" + type + "' is not between 0 and 100, it's: '" + volume + "'");
             } catch (Exception e) {
-                Logger.log(LogTag.JFR, LogLevel.ERROR, e.getMessage());
+                logger.log(Level.WARNING, e.getMessage());
             }
             this.volume = 100;
         } else {
@@ -56,7 +57,7 @@ public class SoundType {
             try {
                 throw new Exception("!!!!!!!! THIS IS A CONFIGURATION ERROR !!!!!!!!!!!! The pitch of the sound '" + type + "' is not between 0 and 2, it's: '" + pitch + "'");
             } catch (Exception e) {
-                Logger.log(LogTag.JFR, LogLevel.ERROR, e.getMessage());
+                logger.log(Level.WARNING, e.getMessage());
             }
 
             this.pitch = 1;
@@ -88,7 +89,7 @@ public class SoundType {
         try {
             player.playSound(player.getLocation(), this.sound, (float) this.volume, (float) this.pitch);
         } catch (Exception e) {
-            Logger.log(LogTag.JFR, LogLevel.ERROR, e.getMessage());
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
@@ -100,7 +101,7 @@ public class SoundType {
         try {
             location.getWorld().playSound(location, this.sound, (float) this.volume, (float) this.pitch);
         } catch (Exception e) {
-            Logger.log(LogTag.JFR, LogLevel.ERROR, e.getMessage());
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
@@ -114,7 +115,7 @@ public class SoundType {
         } catch (Exception e) {
             // Handle cases where the sound name is invalid or reflection fails
             try {
-                Logger.log(LogTag.JFR, LogLevel.ERROR, e.getMessage());
+                logger.log(Level.WARNING, e.getMessage());
                 throw new SoundException("Error: Unable to resolve sound " + sound + ", if your server is running 1.21.3 or newer, make sure to convert the sound names to the new format, like 'minecraft:entity.ender_dragon.flap'.");
             } catch (SoundException ex) {
                 return null;
