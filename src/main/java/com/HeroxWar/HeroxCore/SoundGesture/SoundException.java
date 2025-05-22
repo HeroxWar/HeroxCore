@@ -1,4 +1,4 @@
-package SoundGesture;
+package com.HeroxWar.HeroxCore.SoundGesture;
 
 public class SoundException extends Exception {
 

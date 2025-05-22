@@ -1,3 +1,5 @@
+package com.HeroxWar.HeroxCore;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 
