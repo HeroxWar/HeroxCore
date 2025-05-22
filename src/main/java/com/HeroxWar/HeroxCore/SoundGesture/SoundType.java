@@ -1,4 +1,4 @@
-package SoundGesture;
+package com.HeroxWar.HeroxCore.SoundGesture;
 
 import jdk.jfr.internal.LogLevel;
 import jdk.jfr.internal.LogTag;
