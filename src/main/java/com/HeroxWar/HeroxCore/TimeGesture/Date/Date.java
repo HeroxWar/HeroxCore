@@ -1,12 +1,14 @@
-package com.HeroxWar.HeroxCore.TimeGesture;
+package com.HeroxWar.HeroxCore.TimeGesture.Date;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Date {
 
     private SimpleDateFormat sdf;
     private long milliseconds;
+    private String date;
     private Timestamp timestamp;
 
     /**
@@ -17,6 +19,7 @@ public class Date {
         sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
         milliseconds = System.currentTimeMillis();
         timestamp = new Timestamp(milliseconds);
+        date = sdf.format(timestamp);
     }
 
     /**
@@ -36,8 +39,29 @@ public class Date {
     public Date(char formatter, long milliseconds) {
         sdf = new SimpleDateFormat(
                 "yyyy" + formatter + "MM" + formatter + "dd" + formatter + "HH" + formatter + "mm" + formatter + "ss");
-        this.milliseconds = milliseconds;
-        timestamp = new Timestamp(milliseconds);
+        setMilliseconds(milliseconds);
+    }
+
+    /**
+     * This constructor creates a simple date format with date in input
+     * This method uses a custom formatter such this "-"
+     * Ex. yyyy-MM-dd-HH-mm-ss -> 2025-05-23-11-39-45
+     */
+    public Date(char formatter, String date) {
+        sdf = new SimpleDateFormat(
+                "yyyy" + formatter + "MM" + formatter + "dd" + formatter + "HH" + formatter + "mm" + formatter + "ss");
+        setDate(date);
+    }
+
+    /**
+     * This constructor creates a simple date format with a date type in input
+     * This method uses a custom formatter such this "-"
+     * Ex. yyyy.MM.dd -> 2025.05.23
+     */
+    public Date(char formatter, java.util.Date date) {
+        sdf = new SimpleDateFormat(
+                "yyyy" + formatter + "MM" + formatter + "dd" + formatter + "HH" + formatter + "mm" + formatter + "ss");
+        setMilliseconds(date.getTime());
     }
 
     /**
@@ -54,8 +78,25 @@ public class Date {
      */
     public Date(String pattern, long milliseconds) {
         sdf = new SimpleDateFormat(pattern);
-        this.milliseconds = milliseconds;
-        timestamp = new Timestamp(milliseconds);
+        setMilliseconds(milliseconds);
+    }
+
+    /**
+     * This constructor creates a custom date format with a date in input
+     * Ex. yyyy.MM.dd -> 2025.05.23
+     */
+    public Date(String pattern, String date) {
+        sdf = new SimpleDateFormat(pattern);
+        setDate(date);
+    }
+
+    /**
+     * This constructor creates a custom date format with a date type in input
+     * Ex. yyyy.MM.dd -> 2025.05.23
+     */
+    public Date(String pattern, java.util.Date date) {
+        sdf = new SimpleDateFormat(pattern);
+        setMilliseconds(date.getTime());
     }
 
     public long getMilliseconds() {
@@ -65,25 +106,35 @@ public class Date {
     public void setMilliseconds(long milliseconds) {
         this.milliseconds = milliseconds;
         timestamp = new Timestamp(milliseconds);
+        date = sdf.format(timestamp);
     }
 
-    /**
-     * This method returns a string representation of a date
-     *
-     * @return a string
-     */
     public String getDate() {
-        return sdf.format(timestamp);
+        return date;
+    }
+
+    public void setDate(String date) {
+        try {
+            java.util.Date dateTemp = sdf.parse(date);
+            setMilliseconds(dateTemp.getTime());
+        } catch (ParseException e) {
+            try {
+                throw new DateException("!!!! THE PATTERN OF DATE IS NOT THE SAME CONFIGURED: " + getPattern() + " " + date);
+            } catch (DateException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     /**
      * This method configures the pattern of simple date format
-     * Ex. 2025.05.23
+     * Ex. yyyy.MM.dd -> 2025.05.23
      *
      * @param pattern of simple date format
      */
     public void setPattern(String pattern) {
         sdf = new SimpleDateFormat(pattern);
+        date = sdf.format(timestamp);
     }
 
     public String getPattern() {
