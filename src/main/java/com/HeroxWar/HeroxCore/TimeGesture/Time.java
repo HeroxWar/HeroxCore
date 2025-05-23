@@ -10,10 +10,10 @@ public class Time {
     private static final int secondsInOneMinute = 60;
     private static final int minutesInOneHour = 60;
     private static final int hoursInADay = 24;
-    private long seconds = -1;
-    private long minutes = -1;
-    private long hours = -1;
-    private long days = -1;
+    private long seconds = 0;
+    private long minutes = 0;
+    private long hours = 0;
+    private long days = 0;
     private String formatter = ":";
 
     public Time() {
@@ -299,13 +299,7 @@ public class Time {
      * @param time the other object to subtract
      */
     public void difference(Time time) {
-        boolean isBigger = isBiggerThen(time);
-        Time timeToReturn;
-        if (isBigger) {
-            timeToReturn = new Time(time.getMilliseconds() - getMilliseconds(), formatter);
-        } else {
-            timeToReturn = new Time(getMilliseconds() - time.getMilliseconds(), formatter);
-        }
+        Time timeToReturn = differenceBetween(time);
         setDays(timeToReturn.getDays());
         setHours(timeToReturn.getHours());
         setMinutes(timeToReturn.getMinutes());
@@ -324,17 +318,17 @@ public class Time {
     }
 
     /**
-     * This method returns the sum between instances
-     * Ex. currentTime = [0,0,0,60], times = [0,0,0,60] -> new instance [0,0,2,0]
+     * This method returns the sum between the current instance and an instance passed
+     * Ex. currentTime = [0,0,0,60], times = [0,0,0,60] -> currentTime [0,0,2,0]
      *
      * @param time the other object to compare
      */
     public void sum(Time time) {
-        Time timeSum = new Time(getMilliseconds() + time.getMilliseconds(),formatter);
+        Time timeSum = sumBetween(time);
         setDays(timeSum.getDays());
         setHours(timeSum.getHours());
         setMinutes(timeSum.getMinutes());
         setSeconds(timeSum.getSeconds());
     }
-    
+
 }
