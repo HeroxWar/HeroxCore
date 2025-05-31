@@ -80,29 +80,22 @@ public class SoundType {
         return (float) pitch;
     }
 
+    public boolean isEnabled() { return enabled; }
 
-    public void playSound(final Player player) {
+    public void playSound(Player player) {
         if(!enabled) {
             return;
         }
 
-        try {
-            player.playSound(player.getLocation(), this.sound, (float) this.volume, (float) this.pitch);
-        } catch (Exception e) {
-            logger.log(Level.WARNING, e.getMessage());
-        }
+        player.playSound(player.getLocation(), this.sound, (float) this.volume, (float) this.pitch);
     }
 
-    public void playSound(final Location location) {
-        if(!enabled || location == null || location.getWorld() == null) {
+    public void playSound(Location location) {
+        if(!enabled || location.getWorld() == null) {
             return;
         }
 
-        try {
-            location.getWorld().playSound(location, this.sound, (float) this.volume, (float) this.pitch);
-        } catch (Exception e) {
-            logger.log(Level.WARNING, e.getMessage());
-        }
+        location.getWorld().playSound(location, this.sound, (float) this.volume, (float) this.pitch);
     }
 
     private Sound getSound(final String sound) {
@@ -118,6 +111,7 @@ public class SoundType {
                 logger.log(Level.WARNING, e.getMessage());
                 throw new SoundException("Error: Unable to resolve sound " + sound + ", if your server is running 1.21.3 or newer, make sure to convert the sound names to the new format, like 'minecraft:entity.ender_dragon.flap'.");
             } catch (SoundException ex) {
+                logger.log(Level.WARNING, ex.getMessage());
                 return null;
             }
         }

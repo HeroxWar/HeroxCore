@@ -1,11 +1,16 @@
 package com.HeroxWar.HeroxCore.TimeGesture.Date;
 
+import com.HeroxWar.HeroxCore.SoundGesture.SoundType;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Date {
 
+    private static final Logger logger = Logger.getLogger(Date.class.getName());
     private SimpleDateFormat sdf;
     private long milliseconds;
     private String date;
@@ -121,7 +126,7 @@ public class Date {
             try {
                 throw new DateException("!!!! THE PATTERN OF DATE IS NOT THE SAME CONFIGURED: " + getPattern() + " " + date);
             } catch (DateException ex) {
-                throw new RuntimeException(ex);
+                logger.log(Level.WARNING, ex.getMessage());
             }
         }
     }
@@ -144,9 +149,9 @@ public class Date {
     /**
      * TODO
      */
-    public void setTimeZone() {
+    /*public void setTimeZone() {
 
-    }
+    }*/
 
     /**
      * This method compare two millisecond values
@@ -234,4 +239,13 @@ public class Date {
         setPattern(dateSum.getPattern());
     }
 
+    @Override
+    public String toString() {
+        return "Date{" +
+                "sdf=" + sdf +
+                ", milliseconds=" + milliseconds +
+                ", date='" + date + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
