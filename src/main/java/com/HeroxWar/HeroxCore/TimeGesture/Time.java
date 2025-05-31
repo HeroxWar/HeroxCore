@@ -1,7 +1,6 @@
 package com.HeroxWar.HeroxCore.TimeGesture;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Time {
@@ -14,12 +13,12 @@ public class Time {
     private long minutes = 0;
     private long hours = 0;
     private long days = 0;
-    private String formatter = ":";
+    private char formatter = ':';
 
     public Time() {
     }
 
-    public Time(long milliseconds, String formatter) {
+    public Time(long milliseconds, char formatter) {
         seconds = getSecondsFromMilliseconds(milliseconds);
         minutes = getMinutesFromSeconds(seconds);
         hours = getHoursFromMinutes(minutes);
@@ -31,18 +30,18 @@ public class Time {
         this.formatter = formatter;
     }
 
-    public Time(long days, long hours, long minutes, long seconds, String formatter) {
-        if (seconds > secondsInOneMinute) {
+    public Time(long days, long hours, long minutes, long seconds, char formatter) {
+        if (seconds >= secondsInOneMinute) {
             this.seconds = secondsInOneMinute - 1;
         } else {
             this.seconds = seconds;
         }
-        if (minutes > minutesInOneHour) {
+        if (minutes >= minutesInOneHour) {
             this.minutes = minutesInOneHour - 1;
         } else {
             this.minutes = minutes;
         }
-        if (hours > hoursInADay) {
+        if (hours >= hoursInADay) {
             this.hours = hoursInADay - 1;
         } else {
             this.hours = hours;
@@ -51,10 +50,22 @@ public class Time {
         this.formatter = formatter;
     }
 
-    public Time(int days, int hours, int minutes, int seconds, String formatter) {
-        this.seconds = seconds;
-        this.minutes = minutes;
-        this.hours = hours;
+    public Time(int days, int hours, int minutes, int seconds, char formatter) {
+        if (seconds >= secondsInOneMinute) {
+            this.seconds = secondsInOneMinute - 1;
+        } else {
+            this.seconds = seconds;
+        }
+        if (minutes >= minutesInOneHour) {
+            this.minutes = minutesInOneHour - 1;
+        } else {
+            this.minutes = minutes;
+        }
+        if (hours >= hoursInADay) {
+            this.hours = hoursInADay - 1;
+        } else {
+            this.hours = hours;
+        }
         this.days = days;
         this.formatter = formatter;
     }
@@ -93,6 +104,7 @@ public class Time {
 
     /**
      * This method calculates the milliseconds of the Time instance
+     *
      * @return the milliseconds
      */
     public long getMilliseconds() {
@@ -187,8 +199,8 @@ public class Time {
      * @param formatter the formatter you want to use, for example: "-"
      * @return the formatted informations in this way: 0-0-0-0
      */
-    public String getTime(String formatter) {
-        return days + formatter + hours + formatter + minutes + formatter + seconds;
+    public String getTime(char formatter) {
+        return days + "" + formatter + hours + formatter + minutes + formatter + seconds;
     }
 
     /**
@@ -206,12 +218,18 @@ public class Time {
      * @param formatter the formatter you want to use, for example: "-"
      * @return the formatted informations in this way: 20:10
      */
-    public String getTimeWithoutZeros(String formatter) {
-        String time = getTime(formatter);
-        while (time.contains("0" + formatter)) {
-            time = time.replaceFirst("0" + formatter, "");
+    public String getTimeWithoutZeros(char formatter) {
+        StringBuilder time = new StringBuilder();
+        boolean found = true;
+        for (long partTime : getArrayTime()) {
+            if (partTime == 0 && found) {
+                continue;
+            }
+            found = false;
+            time.append(partTime).append(formatter);
         }
-        return time;
+        time = new StringBuilder(time.substring(0, time.length() - 1));
+        return time.toString();
     }
 
     /**
@@ -234,9 +252,15 @@ public class Time {
      * @return the informations in this way: [20,40]
      */
     public List<Long> getArrayTimeWithoutZero() {
-        List<Long> informations = new ArrayList<>();
-        List<String> rawInfo = Arrays.asList(getTimeWithoutZeros(formatter).split(formatter));
-        rawInfo.forEach(a -> informations.add(Long.parseLong(a)));
+        List<Long> informations = getArrayTime();
+        boolean found = true;
+        while (found) {
+            if (informations.get(0) == 0) {
+                informations.remove(0);
+                continue;
+            }
+            found = false;
+        }
         return informations;
     }
 
@@ -314,7 +338,7 @@ public class Time {
      * @return a time instance with the sum
      */
     public Time sumBetween(Time time) {
-        return new Time(getMilliseconds() + time.getMilliseconds(),formatter);
+        return new Time(getMilliseconds() + time.getMilliseconds(), formatter);
     }
 
     /**
@@ -331,4 +355,14 @@ public class Time {
         setSeconds(timeSum.getSeconds());
     }
 
+    @Override
+    public String toString() {
+        return "Time{" +
+                "seconds=" + seconds +
+                ", minutes=" + minutes +
+                ", hours=" + hours +
+                ", days=" + days +
+                ", formatter='" + formatter + '\'' +
+                '}';
+    }
 }
