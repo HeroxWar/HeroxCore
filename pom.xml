@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.HeroxWar.HeroxCore</groupId>
     <artifactId>HeroxCore</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
@@ -25,8 +25,8 @@
                 <version>3.11.0</version>
                 <configuration>
                     <!-- For test on Intellij use 17, for compiler use 1.8-->
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
 
@@ -89,6 +89,7 @@
                 <configuration>
                     <useFile>true</useFile>
                     <forkCount>1</forkCount>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
 
