@@ -89,7 +89,6 @@
                 <configuration>
                     <useFile>true</useFile>
                     <forkCount>1</forkCount>
-                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
 
