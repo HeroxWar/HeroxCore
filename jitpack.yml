@@ -1,7 +1,17 @@
 jdk:
   - openjdk22
+
 before_install:
+  # Install Maven 3.14.0
+  - wget https://downloads.apache.org/maven/maven-3/3.14.0/binaries/apache-maven-3.14.0-bin.tar.gz
+  - tar -xvzf apache-maven-3.14.0-bin.tar.gz
+  - export M2_HOME=$PWD/apache-maven-3.14.0
+  - export PATH=$M2_HOME/bin:$PATH
+
+  # Use Java 22
   - sdk install java 22-open
   - sdk use java 22-open
+
 install:
+  - mvn -version  # Confirm Maven 3.14.0 is being used
   - mvn clean install -DskipTests
