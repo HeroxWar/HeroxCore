@@ -35,6 +35,14 @@ public class TimeTest {
     }
 
     @Test
+    public void createTimeTicks() {
+        time = new Time(2420,'.');
+
+        // Test
+        Assertions.assertEquals("0.0.2.1", time.getTime());
+    }
+
+    @Test
     public void createTimeLongs() {
         // Preconditions
         time = new Time(60L, 23L, 59L, 59L, '.');
