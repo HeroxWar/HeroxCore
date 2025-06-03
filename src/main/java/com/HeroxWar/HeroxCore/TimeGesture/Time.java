@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Time {
 
+    private static final int ticksInOneSecond = 20;
     private static final int millisecondsInOneSecond = 1000;
     private static final int secondsInOneMinute = 60;
     private static final int minutesInOneHour = 60;
@@ -16,6 +17,10 @@ public class Time {
     private char formatter = ':';
 
     public Time() {
+    }
+
+    public Time(int ticks, char formatter) {
+        this((long) ticks / ticksInOneSecond * millisecondsInOneSecond, formatter);
     }
 
     public Time(long milliseconds, char formatter) {
