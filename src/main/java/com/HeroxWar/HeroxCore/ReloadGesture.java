@@ -1,5 +1,6 @@
 package com.HeroxWar.HeroxCore;
 
+import com.HeroxWar.HeroxCore.Utils.Nms;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.*;
 import org.yaml.snakeyaml.error.YAMLException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,13 +25,13 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ReloadGesture {
 
-    final static String packageName = Bukkit.getServer().getClass().getPackage().getName();
-    final static String nms = (packageName.equals("org.bukkit.craftbukkit") ? "." : "." + packageName.split("\\.")[3] + ".");
-    static boolean nmsVers = true;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ReloadGesture.class.getName());
+    private static final Nms nms = new Nms();
 
     public static PluginDescriptionFile getPluginDescription(File file) throws InvalidDescriptionException {
         if (file == null)
@@ -113,11 +115,15 @@ public class ReloadGesture {
             try {
                 target = Bukkit.getPluginManager().loadPlugin(pluginFile);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, e.getMessage());
             }
 
-            target.onLoad();
-            Bukkit.getPluginManager().enablePlugin(target);
+            if(target != null) {
+                target.onLoad();
+                Bukkit.getPluginManager().enablePlugin(target);
+            } else {
+                MessageGesture.sendMessage(Bukkit.getServer().getConsoleSender(), "&cError with plugin " + name + ", is not possible to load it, please use Plugman or reload the server");
+            }
 
         }
 
@@ -140,6 +146,9 @@ public class ReloadGesture {
         }
 
         Map<String, Command> knownCommands = getKnownCommands();
+        if(knownCommands == null) {
+            return new ArrayList<>();
+        }
         return knownCommands.entrySet().stream()
                 .filter(s -> {
                     if (s.getKey().contains(":")) return s.getKey().split(":")[0].equalsIgnoreCase(plugin.getName());
@@ -156,12 +165,9 @@ public class ReloadGesture {
     }
 
     public static void loadCommands(Plugin plugin) {
-        PluginManager pluginManager = Bukkit.getPluginManager();
         List<Map.Entry<String, Command>> commands = getCommandsFromPlugin(plugin);
 
-
         for (Map.Entry<String, Command> entry : commands) {
-
             String alias = entry.getKey();
             Command command = entry.getValue();
             wrap(command, alias);
@@ -170,16 +176,9 @@ public class ReloadGesture {
         sync();
     }
 
-
     public static void reload(String pluginName) {
-        try {
-            Class.forName("net.minecraft.server.MinecraftServer");
-            nmsVers = false;
-        } catch (ClassNotFoundException ignore) {
-        }
-
         unload(pluginName);
-        System.out.println("Unloading '" + pluginName + "' plugin");
+        MessageGesture.sendMessage(Bukkit.getServer().getConsoleSender(), "Unloading '" + pluginName + "' plugin");
         load(pluginName);
     }
 
@@ -188,7 +187,9 @@ public class ReloadGesture {
         List<Plugin> pluginList = null;
         boolean reloadlisteners = true;
         Plugin plugin = Bukkit.getPluginManager().getPlugin(plName);
-        String name = plugin.getName();
+        if(plugin == null) {
+            return;
+        }
         PluginManager pluginManager = Bukkit.getPluginManager();
         SimpleCommandMap commandMap = null;
         List<Plugin> plugins = null;
@@ -291,7 +292,7 @@ public class ReloadGesture {
                 knownCommandsField.setAccessible(true);
                 commands = (Map<String, Command>) knownCommandsField.get(commandMap);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, e.getMessage());
                 return;
             }
         }
@@ -332,7 +333,7 @@ public class ReloadGesture {
                                     commands.remove(entry.getKey());
                                 }
                             } catch (IllegalAccessException e) {
-                                e.printStackTrace();
+                                logger.log(Level.WARNING, e.getMessage());
                             }
                         }
                     } catch (IllegalStateException e) {
@@ -371,7 +372,7 @@ public class ReloadGesture {
                                     modifiedKnownCommands.remove(entry.getKey());
                                 }
                             } catch (IllegalAccessException e) {
-                                e.printStackTrace();
+                                logger.log(Level.WARNING, e.getMessage());
                             }
                         }
                     } catch (Exception e) {
@@ -395,7 +396,7 @@ public class ReloadGesture {
         }
 
         if (plugins != null && plugins.contains(plugin)) plugins.remove(plugin);
-        if (names != null && names.containsKey(name)) names.remove(name);
+        if (names != null && names.containsKey(plName)) names.remove(plName);
 
         // UNLOAD COMMANDS ---
         Map<String, Command> knownCommands = getKnownCommands();
@@ -414,7 +415,7 @@ public class ReloadGesture {
                     owningPlugin = (Plugin) pluginField.get(stringCommandEntry.getValue());
                     return owningPlugin.getName().equalsIgnoreCase(plugin.getName());
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    logger.log(Level.WARNING, e.getMessage());
                 }
             }
 
@@ -442,12 +443,12 @@ public class ReloadGesture {
                     pluginInitField.setAccessible(true);
                     pluginInitField.set(cl, null);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    logger.log(Level.WARNING, ex.getMessage());
                 }
                 try {
                     ((URLClassLoader) cl).close();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    logger.log(Level.WARNING, ex.getMessage());
                 }
             }
         } catch (Exception ignored) {
@@ -458,14 +459,12 @@ public class ReloadGesture {
     }
 
     public static void setKnownCommands(Map<String, Command> knownCommands) {
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
         Field commandMapField;
         try {
             commandMapField = Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".CraftServer").getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
@@ -473,7 +472,7 @@ public class ReloadGesture {
         try {
             commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getServer());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
         Field knownCommandsField;
@@ -481,26 +480,24 @@ public class ReloadGesture {
             knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
             knownCommandsField.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
         try {
             knownCommandsField.set(commandMap, knownCommands);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
     public static Map<String, Command> getKnownCommands() {
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
         Field commandMapField;
         try {
             commandMapField = Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".CraftServer").getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return null;
         }
 
@@ -508,7 +505,7 @@ public class ReloadGesture {
         try {
             commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getServer());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return null;
         }
 
@@ -517,7 +514,7 @@ public class ReloadGesture {
             knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
             knownCommandsField.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return null;
         }
 
@@ -525,7 +522,7 @@ public class ReloadGesture {
         try {
             knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return null;
         }
 
@@ -533,33 +530,28 @@ public class ReloadGesture {
     }
 
     public static void wrap(Command command, String alias) {
-        try {
-            Class.forName("com.mojang.brigadier.CommandDispatcher");
-        } catch (Exception ignored) {
-            // No need to wrap commands if brigadier is not present
+        if(!nms.isBrigadierIsActive()) {
             return;
         }
 
         Method getServerMethod;
-        Class<?> minecraftServerClass;
         try {
-            minecraftServerClass = Class.forName("net.minecraft.server" + (nmsVers ? nms : ".") + "MinecraftServer");
-            getServerMethod = minecraftServerClass.getMethod("getServer");
+            getServerMethod = nms.getMinecraftServerClass().getMethod("getServer");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
         Object minecraftServer;
         try {
-            minecraftServer = getServerMethod.invoke("net.minecraft.server" + (nmsVers ? nms : ".") + "MinecraftServer");
+            minecraftServer = getServerMethod.invoke("net.minecraft.server" + (nms.isNmsVersion() ? nms : ".") + "MinecraftServer");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
         Field vanillaCommandDispatcherField;
         try {
-            vanillaCommandDispatcherField = minecraftServerClass.getDeclaredField("vanillaCommandDispatcher");
+            vanillaCommandDispatcherField = nms.getMinecraftServerClass().getDeclaredField("vanillaCommandDispatcher");
             vanillaCommandDispatcherField.setAccessible(true);
         } catch (Exception ignored) {
             return;
@@ -576,17 +568,17 @@ public class ReloadGesture {
 
         Constructor bukkitcommandWrapperConstructor;
         try {
-            bukkitcommandWrapperConstructor = Class.forName(packageName + ".command.BukkitCommandWrapper").getDeclaredConstructor(Class.forName(packageName + ".CraftServer"), Command.class);
+            bukkitcommandWrapperConstructor = Class.forName(nms.getPackageName() + ".command.BukkitCommandWrapper").getDeclaredConstructor(Class.forName(nms.getPackageName() + ".CraftServer"), Command.class);
             bukkitcommandWrapperConstructor.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
         Object commandWrapper;
         try {
             commandWrapper = bukkitcommandWrapperConstructor.newInstance(Bukkit.getServer(), command);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
@@ -595,7 +587,7 @@ public class ReloadGesture {
             aMethod = commandDispatcher.getClass().getDeclaredMethod("a");
             aMethod.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
@@ -609,11 +601,11 @@ public class ReloadGesture {
 
         Method registerMethod;
         try {
-            registerMethod = Class.forName(packageName + ".command.BukkitCommandWrapper")
+            registerMethod = Class.forName(nms.getPackageName() + ".command.BukkitCommandWrapper")
                     .getMethod("register", CommandDispatcher.class, String.class);
             registerMethod.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
@@ -621,38 +613,33 @@ public class ReloadGesture {
         try {
             registerMethod.invoke(commandWrapper, aInstance, alias);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
     public static void unwrap(String command) {
-        try {
-            Class.forName("com.mojang.brigadier.CommandDispatcher");
-        } catch (Exception ignored) {
-            // No need to unwrap commands if brigadier is not present
+        if(!nms.isBrigadierIsActive()) {
             return;
         }
 
         Method getServerMethod;
-        Class<?> minecraftServerClass;
         try {
-            minecraftServerClass = Class.forName("net.minecraft.server" + (nmsVers ? nms : ".") + "MinecraftServer");
-            getServerMethod = minecraftServerClass.getMethod("getServer");
+            getServerMethod = nms.getMinecraftServerClass().getMethod("getServer");
         } catch (Exception ignored) {
             return;
         }
         Object server;
         try {
-            server = getServerMethod.invoke(minecraftServerClass);
+            server = getServerMethod.invoke(nms.getMinecraftServerClass());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
 
         Field vanillaCommandDispatcherField;
         try {
-            vanillaCommandDispatcherField = minecraftServerClass.getDeclaredField("vanillaCommandDispatcher");
+            vanillaCommandDispatcherField = nms.getMinecraftServerClass().getDeclaredField("vanillaCommandDispatcher");
             vanillaCommandDispatcherField.setAccessible(true);
         } catch (NoSuchFieldException ignored) {
             return;
@@ -661,13 +648,13 @@ public class ReloadGesture {
         try {
             commandDispatcher = vanillaCommandDispatcherField.get(server);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
         Field bField;
         try {
-            bField = Class.forName("net.minecraft.server" + (nmsVers ? nms : ".") + "CommandDispatcher").getDeclaredField("b");
+            bField = Class.forName("net.minecraft.server" + (nms.isNmsVersion() ? nms : ".") + "CommandDispatcher").getDeclaredField("b");
             bField.setAccessible(true);
             ;
         } catch (Exception e) {
@@ -681,7 +668,7 @@ public class ReloadGesture {
                 bField.setAccessible(true);
             } catch (Exception ex) {
                 ex.addSuppressed(e);
-                e.printStackTrace();
+                logger.log(Level.WARNING, e.getMessage());
                 return;
             }
         }
@@ -702,31 +689,31 @@ public class ReloadGesture {
                 removeCommandMethod = CommandNode.class.getDeclaredMethod("removeCommand", String.class);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
         try {
             removeCommandMethod.invoke(b.getRoot(), command);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
     public static void sync() {
         Method syncCommandsMethod;
         try {
-            syncCommandsMethod = Class.forName(packageName + ".CraftServer").getDeclaredMethod("syncCommands");
+            syncCommandsMethod = Class.forName(nms.getPackageName() + ".CraftServer").getDeclaredMethod("syncCommands");
             syncCommandsMethod.setAccessible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
             return;
         }
 
         try {
             syncCommandsMethod.invoke(Bukkit.getServer());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
         }
 
         if (Bukkit.getOnlinePlayers().isEmpty()) return;
