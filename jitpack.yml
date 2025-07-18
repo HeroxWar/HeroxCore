@@ -2,12 +2,16 @@ jdk:
   - openjdk22
 
 before_install:
-  # Scarica Maven 3.9.6
-  - wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-  - tar -xzf apache-maven-3.9.6-bin.tar.gz
-  - mv apache-maven-3.9.6 $HOME/maven
+  # Install Maven 3.9.6 (or 3.14.0 if available later)
+  - wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.11-bin.tar.gz
+  - tar -xvzf apache-maven-3.9.11-bin.tar.gz
+  - export M2_HOME=$PWD/apache-maven-3.9.11
+  - export PATH=$M2_HOME/bin:$PATH
+
+  # Use Java 22
+  - sdk install java 22-open
+  - sdk use java 22-open
 
 install:
-  # Forza l’uso di Maven corretto con percorso assoluto
-  - $HOME/maven/bin/mvn -version
-  - $HOME/maven/bin/mvn clean install -DskipTests
+  - mvn -version  # Confirm Maven 3.14.0 is being used
+  - mvn clean install -DskipTests
