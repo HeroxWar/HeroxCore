@@ -3,7 +3,7 @@ jdk:
 
 before_install:
   # Install Maven 3.9.6 (or 3.14.0 if available later)
-  - wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.11-bin.tar.gz
+  - wget https://downloads.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz
   - tar -xvzf apache-maven-3.9.11-bin.tar.gz
   - export M2_HOME=$PWD/apache-maven-3.9.11
   - export PATH=$M2_HOME/bin:$PATH
