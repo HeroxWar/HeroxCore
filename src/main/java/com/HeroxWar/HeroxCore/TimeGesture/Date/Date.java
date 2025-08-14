@@ -120,7 +120,7 @@ public class Date {
 
     public java.util.Date getUtilDate() {
         try {
-            java.util.Date dateTemp = sdf.parse(date);
+            return sdf.parse(date);
         } catch (ParseException e) {
             try {
                 throw new DateException("!!!! THE PATTERN OF DATE IS NOT THE SAME CONFIGURED: " + getPattern() + " " + date);
