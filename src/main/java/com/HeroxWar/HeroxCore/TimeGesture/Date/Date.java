@@ -118,6 +118,19 @@ public class Date {
         return date;
     }
 
+    public java.util.Date getUtilDate() {
+        try {
+            java.util.Date dateTemp = sdf.parse(date);
+        } catch (ParseException e) {
+            try {
+                throw new DateException("!!!! THE PATTERN OF DATE IS NOT THE SAME CONFIGURED: " + getPattern() + " " + date);
+            } catch (DateException ex) {
+                logger.log(Level.WARNING, ex.getMessage());
+            }
+        }
+        return null;
+    }
+
     public void setDate(String date) {
         try {
             java.util.Date dateTemp = sdf.parse(date);
