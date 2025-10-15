@@ -1,11 +1,11 @@
 package com.HeroxWar.HeroxCore.Utils;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,11 +15,13 @@ public class NmsTest {
 
     // Fake Instance
     Nms nms;
+    PlayerMock playerMock;
 
     @BeforeEach
     public void setUp() {
         // Inizialization server and plugin
         serverMock = MockBukkit.mock();
+        playerMock = serverMock.addPlayer();
         nms = new Nms();
     }
 
@@ -76,6 +78,11 @@ public class NmsTest {
     @Test
     public void testToStringNotNull() {
         assertNotNull(nms.toString());
+    }
+
+    @Test
+    public void testGetNmsClass() {
+        assertThrows(ClassNotFoundException.class, () -> nms.getNMSClass("org.bukkit.craftbukkit.__VERSION__.entity.CraftPlayer"));
     }
 
 }
