@@ -30,6 +30,10 @@ public class Nms {
         checkMinecraftServerClass();
     }
 
+    public Class<?> getNMSClass(String path) throws ClassNotFoundException {
+        return Class.forName(path.replace(".__VERSION__.", nms));
+    }
+
     public void checkNmsVersion() {
         try {
             Class.forName("net.minecraft.server.MinecraftServer");
