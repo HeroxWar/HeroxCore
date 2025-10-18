@@ -2,11 +2,8 @@ package com.HeroxWar.HeroxCore.Utils;
 
 import org.bukkit.Bukkit;
 
-import java.util.logging.Level;
-
 public class Nms {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Nms.class.getName());
     private String packageName = Bukkit.getServer().getClass().getPackage().getName();
 
     private String nms;
@@ -14,6 +11,9 @@ public class Nms {
     private boolean brigadierIsActive;
     private Class<?> minecraftServerClass;
 
+    /**
+     * This constructor check the nms version
+     */
     public Nms() {
         try {
             if (packageName.equals("org.bukkit.craftbukkit")) {
@@ -27,14 +27,24 @@ public class Nms {
         }
         checkNmsVersion();
         checkBrigadier();
-        checkMinecraftServerClass();
+        try {
+            checkMinecraftServerClass();
+        } catch (NmsException ignore) {
+
+        }
     }
 
+    /**
+     * Return the Class reflected from a specific path
+     * @param path
+     * @return
+     * @throws ClassNotFoundException
+     */
     public Class<?> getNMSClass(String path) throws ClassNotFoundException {
         return Class.forName(path.replace(".__VERSION__.", nms));
     }
 
-    public void checkNmsVersion() {
+    private void checkNmsVersion() {
         try {
             Class.forName("net.minecraft.server.MinecraftServer");
             nmsVersion = false;
@@ -43,7 +53,7 @@ public class Nms {
         }
     }
 
-    public void checkBrigadier() {
+    private void checkBrigadier() {
         try {
             Class.forName("com.mojang.brigadier.CommandDispatcher");
             brigadierIsActive = true;
@@ -52,12 +62,12 @@ public class Nms {
         }
     }
 
-    public void checkMinecraftServerClass() {
+    private void checkMinecraftServerClass() throws NmsException {
         try {
             minecraftServerClass = Class.forName("net.minecraft.server" + (nmsVersion ? nms : ".") + "MinecraftServer");
         } catch (Exception ex) {
-            logger.log(Level.WARNING, ex.getMessage());
             brigadierIsActive = false;
+            throw new NmsException(ex.getMessage());
         }
     }
 

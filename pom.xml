@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.HeroxWar.HeroxCore</groupId>
     <artifactId>HeroxCore</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8

@@ -1,6 +1,7 @@
 package com.HeroxWar.HeroxCore.Utils;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -8,7 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.block.BlockMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.world.Coordinate;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 public class TextureTest {
 
@@ -17,11 +21,15 @@ public class TextureTest {
     // Fake Instances
     PlayerMock elio;
     PlayerMock sav;
+    WorldMock worldMock;
+    BlockMock skullBlock;
 
     @BeforeEach
     public void setUp() {
         // Inizialization server and plugin
         serverMock = MockBukkit.mock();
+        worldMock = serverMock.addSimpleWorld("world");
+        skullBlock = worldMock.createBlock(new Coordinate(100, 100, 100));
         elio = serverMock.addPlayer("eliotesta98");
         sav = serverMock.addPlayer("xSavior_of_God");
     }
@@ -33,11 +41,10 @@ public class TextureTest {
     }
 
     @Test
-    public void texture() {
+    public void texture() throws TextureException {
         String texture = Texture.getPlayerTexture(elio);
         Assertions.assertEquals("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Im51bGwifX19", texture);
-        texture = Texture.getPlayerTexture(sav, "a");
-        Assertions.assertEquals("a", texture);
+        Assertions.assertThrows(TextureException.class, () -> Texture.getPlayerTexture(sav, "a"));
     }
 
     @Test
@@ -53,7 +60,7 @@ public class TextureTest {
     }
 
     @Test
-    public void setTextureToItem() {
+    public void setTextureToItem() throws TextureException {
         ItemStack itemStack = new ItemStack(Material.getMaterial("PLAYER_HEAD"), 1);
         Assertions.assertFalse(itemStack.toString().contains("player-profile=CraftPlayerProfile [uniqueId="));
         itemStack = Texture.setCustomTexture(itemStack, "ewogICJ0aW1lc3RhbXAiIDogMTcwNTc3NDI4MzE1NSwKICAicHJvZmlsZUlkIiA6ICJlMWM1MTZ" +
@@ -64,6 +71,15 @@ public class TextureTest {
                 "CAiQ0FQRSIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM0MGMwZTAzZGQy" +
                 "NGExMWIxNWE4YjMzYzJhN2U5ZTMyYWJiMjA1MWIyNDgxZDBiYTdkZWZkNjM1Y2E3YTkzMyIKICAgIH0KICB9Cn0=");
         Assertions.assertTrue(itemStack.toString().contains("player-profile=CraftPlayerProfile [uniqueId="));
+    }
+
+    @Test
+    public void setTextureToBlock() {
+        Texture.setCustomTexture(skullBlock, "eliotesta98");
+        Assertions.assertEquals("PLAYER_WALL_HEAD", skullBlock.getType().toString());
+        skullBlock.setType(Material.PLAYER_HEAD);
+        Texture.setCustomTexture(skullBlock, "eliotesta98");
+        Assertions.assertEquals("PLAYER_HEAD", skullBlock.getType().toString());
     }
 
 }
