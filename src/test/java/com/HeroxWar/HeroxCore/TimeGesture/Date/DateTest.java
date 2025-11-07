@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -37,7 +36,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date('-', System.currentTimeMillis());
+        Date date = new Date('-', System.currentTimeMillis());
         String today = date.getDate();
 
         // Test
@@ -51,7 +50,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date('-');
+        Date date = new Date('-');
         String today = date.getDate();
 
         // Test
@@ -65,7 +64,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date('-', dateToday);
+        Date date = new Date('-', dateToday);
         String today = date.getDate();
 
         // Test
@@ -79,7 +78,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date('-', new java.util.Date());
+        Date date = new Date('-', new java.util.Date());
         String today = date.getDate();
 
         // Test
@@ -93,7 +92,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date("yyyy-MM-dd");
+        Date date = new Date("yyyy-MM-dd");
         String today = date.getDate();
 
         // Test
@@ -107,7 +106,7 @@ public class DateTest {
         long milliseconds = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(milliseconds);
         String dateToday = sdf.format(timestamp);
-        date = new Date("yyyy-MM-dd", System.currentTimeMillis());
+        Date date = new Date("yyyy-MM-dd", System.currentTimeMillis());
         String today = date.getDate();
 
         // Test
@@ -237,7 +236,7 @@ public class DateTest {
     public void differenceBetween() {
         // Precondition
         long milliseconds = System.currentTimeMillis();
-        date = new Date('-', milliseconds);
+        Date date = new Date('-', milliseconds);
         Date newDate = new Date('-', milliseconds + 1000L);
 
         // Tests
@@ -251,7 +250,7 @@ public class DateTest {
     public void difference() {
         // Precondition
         long milliseconds = System.currentTimeMillis();
-        date = new Date('-', milliseconds);
+        Date date = new Date('-', milliseconds);
         Date newDate = new Date('-', milliseconds + 1000L);
 
         // Test
@@ -263,7 +262,7 @@ public class DateTest {
     public void sumBetween() {
         // Precondition
         long milliseconds = System.currentTimeMillis();
-        date = new Date('-', milliseconds);
+        Date date = new Date('-', milliseconds);
         Date newDate = new Date('-', 1000L);
 
         // Test
@@ -275,7 +274,7 @@ public class DateTest {
     public void sum() {
         // Precondition
         long milliseconds = System.currentTimeMillis();
-        date = new Date('-', milliseconds);
+        Date date = new Date('-', milliseconds);
         Date newDate = new Date('-', 1000L);
 
         // Test
@@ -287,11 +286,33 @@ public class DateTest {
     public void toStringCompare() {
         // Precondition
         long milliseconds = System.currentTimeMillis();
-        date = new Date('-', milliseconds);
+        Date date = new Date('-', milliseconds);
         Date newDate = new Date('-', milliseconds);
 
         // Test
         Assertions.assertEquals(newDate.toString(), date.toString());
+    }
+
+    @Test
+    public void getUtilDate() {
+        java.util.Date date1 = date.getUtilDate();
+        Assertions.assertNotNull(date1);
+    }
+
+    @Test
+    public void getUtilDateError() {
+        Date date = new Date('-', "2025.11.07.23.20.25");
+        Assertions.assertNull(date.getUtilDate());
+    }
+
+    @Test
+    public void getDateDividedTest() {
+        Assertions.assertTrue(date.getYear() > -1);
+        Assertions.assertTrue(date.getMonth() > -1);
+        Assertions.assertTrue(date.getDay() > -1);
+        Assertions.assertTrue(date.getHours() > -1);
+        Assertions.assertTrue(date.getMinutes() > -1);
+        Assertions.assertTrue(date.getSeconds() > -1);
     }
 
 }
