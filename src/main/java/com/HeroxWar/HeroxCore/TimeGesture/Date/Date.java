@@ -1,7 +1,5 @@
 package com.HeroxWar.HeroxCore.TimeGesture.Date;
 
-import com.HeroxWar.HeroxCore.SoundGesture.SoundType;
-
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -121,7 +119,7 @@ public class Date {
     public java.util.Date getUtilDate() {
         try {
             return sdf.parse(date);
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             try {
                 throw new DateException("!!!! THE PATTERN OF DATE IS NOT THE SAME CONFIGURED: " + getPattern() + " " + date);
             } catch (DateException ex) {
@@ -250,6 +248,30 @@ public class Date {
         Date dateSum = sumBetween(date);
         setMilliseconds(dateSum.getMilliseconds());
         setPattern(dateSum.getPattern());
+    }
+
+    public int getYear() {
+        return timestamp.toLocalDateTime().getYear();
+    }
+
+    public int getMonth() {
+        return timestamp.toLocalDateTime().getMonth().getValue();
+    }
+
+    public int getDay() {
+        return timestamp.toLocalDateTime().getDayOfMonth();
+    }
+
+    public int getHours() {
+        return timestamp.toLocalDateTime().getHour();
+    }
+
+    public int getMinutes() {
+        return timestamp.toLocalDateTime().getMinute();
+    }
+
+    public int getSeconds() {
+        return timestamp.toLocalDateTime().getSecond();
     }
 
     @Override
