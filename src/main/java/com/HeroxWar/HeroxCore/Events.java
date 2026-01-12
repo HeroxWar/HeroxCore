@@ -14,6 +14,10 @@ import java.util.List;
 
 public class Events implements Listener {
 
+    public Events() {
+
+    }
+
     public Events(Plugin pluginInstance, List<String> ignoredEvents) {
         method(pluginInstance, ignoredEvents);
     }
@@ -30,14 +34,10 @@ public class Events implements Listener {
             }
         };
 
-        try (ScanResult scanResult = new ClassGraph()
-                .enableClassInfo()
-                .acceptPackages("org.bukkit.event") // limit scan to Bukkit events
-                .scan()) {
+        ScanResult scanResult = initializeScan().scan();
 
-            ClassInfoList events = scanResult.getClassInfo(Event.class.getName())
-                    .getSubclasses()
-                    .filter(info -> !info.isAbstract());
+        try (scanResult) {
+            ClassInfoList events = getListEvents(scanResult);
 
             try {
                 for (ClassInfo event : events) {
@@ -64,14 +64,32 @@ public class Events implements Listener {
             }
 
             // Logging discovered events
-            String[] eventNames = events.stream()
-                    .map(info -> info.getName().substring(info.getName().lastIndexOf('.') + 1))
-                    .toArray(String[]::new);
-
-            System.out.println("List of events: " + String.join(", ", eventNames));
-            System.out.println("Events found: " + events.size());
-            System.out.println("HandlerList size: " + HandlerList.getHandlerLists().size());
+            discoveredEvents(events);
         }
+    }
+
+    public ClassGraph initializeScan() {
+        // limit scan to Bukkit events
+        return new ClassGraph()
+                .enableClassInfo()
+                .acceptPackages("org.bukkit.event");
+    }
+
+    public ClassInfoList getListEvents(ScanResult scanResult) {
+        return scanResult.getClassInfo(Event.class.getName())
+                .getSubclasses()
+                .filter(info -> !info.isAbstract());
+    }
+
+    public void discoveredEvents(ClassInfoList events) {
+        // Logging discovered events
+        String[] eventNames = events.stream()
+                .map(info -> info.getName().substring(info.getName().lastIndexOf('.') + 1))
+                .toArray(String[]::new);
+
+        System.out.println("List of events: " + String.join(", ", eventNames));
+        System.out.println("Events found: " + events.size());
+        System.out.println("HandlerList size: " + HandlerList.getHandlerLists().size());
     }
 
 }

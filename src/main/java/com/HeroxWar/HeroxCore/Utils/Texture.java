@@ -30,14 +30,17 @@ public class Texture {
     private static final Version version = new Version();
 
     /**
-     * Set a texture of a skull item
+     * Sets a custom texture on a skull item.
      *
-     * @param item
-     * @param texture
-     * @return
+     * @param item the skull item whose texture will be set
+     * @param texture the texture to apply to the item
+     * @return the skull item with the applied texture
+     * @throws TextureException if the texture is invalid or cannot be applied
      */
     public static ItemStack setCustomTexture(ItemStack item, String texture) throws TextureException {
-        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        if(!(item.getItemMeta() instanceof SkullMeta meta)) {
+            return item;
+        }
         try {
             UUID uuid = Bukkit.getOnlinePlayers().stream().findFirst().map(Player::getUniqueId).orElse(RANDOM_UUID);
             PlayerProfile player_profile = Bukkit.getServer().createPlayerProfile(uuid, "Tombs");
@@ -47,7 +50,7 @@ public class Texture {
             try {
                 meta.setOwnerProfile(player_profile);
             } catch (NullPointerException exx) {
-                throw new TextureException("Failed to set skull owner Game Profile, please check if the texture is correct: '" + texture + "'" + exx.getMessage());
+                throw new TextureException("Failed to set skull owner Game Profile, please check if the texture is correct: '" + texture + "' " + exx.getMessage());
             }
         } catch (NoSuchMethodError | MalformedURLException ignored) {
             try {
@@ -61,7 +64,7 @@ public class Texture {
                 } catch (Exception e) {
                     throw new TextureException(e.getMessage());
                 }
-            } catch (NoSuchMethodError ignored2) {
+            } catch (NoSuchMethodError | UnsupportedOperationException ignored2) {
                 GameProfile profile = new GameProfile(UUID.randomUUID(), "");
                 try {
                     java.lang.reflect.Method getPropertiesMethod = profile.getClass().getDeclaredMethod("getProperties");
@@ -83,10 +86,10 @@ public class Texture {
     }
 
     /**
-     * Set a player head texture of a skull block
+     * Sets the head texture of a skull block to the specified player's texture.
      *
-     * @param block
-     * @param playerName
+     * @param block the skull block whose texture will be set
+     * @param playerName the name of the player whose head texture will be applied
      */
     public static void setCustomTexture(Block block, String playerName) {
         if (!(block.getState() instanceof Skull)) {
@@ -97,7 +100,7 @@ public class Texture {
 
         // get Skull Block
         Skull skull = (Skull) block.getState();
-        String profileName = null;
+        String profileName;
         try {
             profileName = getProfileName(profile);
         } catch (TextureException e) {
@@ -139,10 +142,10 @@ public class Texture {
     }
 
     /**
-     * Return the player texture
+     * Returns the player's texture.
      *
-     * @param p
-     * @return
+     * @param p the player whose texture is to be retrieved
+     * @return the player's texture
      */
     public static String getPlayerTexture(Player p) {
         try {
@@ -153,11 +156,12 @@ public class Texture {
     }
 
     /**
-     * Return the player texture or a default value
+     * Returns the player's texture, or a default value if the player has no texture.
      *
-     * @param p
-     * @param defaultTexture
-     * @return
+     * @param p the player whose texture is to be retrieved
+     * @param defaultTexture the texture to return if the player has none
+     * @return the player's texture, or {@code defaultTexture} if unavailable
+     * @throws TextureException if an error occurs while retrieving the player's texture
      */
     public static String getPlayerTexture(Player p, String defaultTexture) throws TextureException {
         // get GameProfile of the player
@@ -214,12 +218,15 @@ public class Texture {
     }
 
     /**
-     * Convert a base64 texture to URL
+     * Converts a Base64-encoded texture into a URL.
      *
-     * @param texture
-     * @return
+     * @param texture the Base64-encoded texture string; must not be {@code null} or empty
+     * @return the URL generated from the given texture
      */
     public static String convertBase64ToURL(String texture) {
+        if(texture == null || texture.equalsIgnoreCase("")) {
+            return "";
+        }
         String jsonString = new String(Base64.getDecoder().decode(texture), StandardCharsets.UTF_8);
 
         JSONObject jsonObject = new JSONObject(jsonString);

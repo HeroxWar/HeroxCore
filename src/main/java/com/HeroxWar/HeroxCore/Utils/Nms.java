@@ -46,8 +46,8 @@ public class Nms {
 
     private void checkNmsVersion() {
         try {
-            Class.forName("net.minecraft.server.MinecraftServer");
             nmsVersion = false;
+            Class.forName("net.minecraft.server.MinecraftServer");
         } catch (ClassNotFoundException ignore) {
             nmsVersion = true;
         }
