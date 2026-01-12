@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.block.BlockMock;
@@ -41,7 +42,7 @@ public class TextureTest {
     }
 
     @Test
-    public void texture() throws TextureException {
+    public void texture() {
         String texture = Texture.getPlayerTexture(elio);
         Assertions.assertEquals("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Im51bGwifX19", texture);
         Assertions.assertThrows(TextureException.class, () -> Texture.getPlayerTexture(sav, "a"));
@@ -61,7 +62,7 @@ public class TextureTest {
 
     @Test
     public void setTextureToItem() throws TextureException {
-        ItemStack itemStack = new ItemStack(Material.getMaterial("PLAYER_HEAD"), 1);
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
         Assertions.assertFalse(itemStack.toString().contains("player-profile=CraftPlayerProfile [uniqueId="));
         itemStack = Texture.setCustomTexture(itemStack, "ewogICJ0aW1lc3RhbXAiIDogMTcwNTc3NDI4MzE1NSwKICAicHJvZmlsZUlkIiA6ICJlMWM1MTZ" +
                 "kYmJiZTI0ZGE3OTEwOTllN2Y0YTUxYTkzOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlbGlvdGVzdGE5OCIsCiAgInNpZ25hdHVyZVJlc" +
@@ -74,6 +75,19 @@ public class TextureTest {
     }
 
     @Test
+    public void setCustomTextureFailure() {
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+        Assertions.assertThrows(TextureException.class, () -> Texture.setCustomTexture(itemStack, ""));
+        Assertions.assertThrows(TextureException.class, () -> Texture.setCustomTexture(itemStack, null));
+    }
+
+    @Test
+    public void setCustomTextureFailure2() throws TextureException {
+        ItemStack itemStack = new ItemStack(Material.DIRT, 1);
+        Assertions.assertEquals(itemStack, Texture.setCustomTexture(itemStack, ""));
+    }
+
+    @Test
     public void setTextureToBlock() {
         Texture.setCustomTexture(skullBlock, "eliotesta98");
         Assertions.assertEquals("PLAYER_WALL_HEAD", skullBlock.getType().toString());
@@ -81,5 +95,4 @@ public class TextureTest {
         Texture.setCustomTexture(skullBlock, "eliotesta98");
         Assertions.assertEquals("PLAYER_HEAD", skullBlock.getType().toString());
     }
-
 }
