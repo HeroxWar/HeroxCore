@@ -3,7 +3,9 @@ package com.HeroxWar.HeroxCore.Gestion;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultGestion extends Gestion {
@@ -16,6 +18,7 @@ public class DefaultGestion extends Gestion {
     private FileConfiguration fc;
 
     private Map<String, Boolean> debug = new HashMap<>();
+    private final List<String> hooksEnabled = new ArrayList<>();
     private Map<String, Boolean> hooks = new HashMap<>();
     private Map<String, String> messages = new HashMap<>();
 
@@ -67,7 +70,16 @@ public class DefaultGestion extends Gestion {
 
     private void recursiveBooleanConfiguration(String configurationSection, String path, Map<String, Boolean> informations) {
         if (!fc.isConfigurationSection(path)) {
-            informations.put(path.replaceFirst(configurationSection, ""), fc.getBoolean(path, false));
+            String newPath = path.replaceFirst(configurationSection, "");
+            if(newPath.contains(".")) {
+                if(newPath.contains("Enabled")) {
+                    String[] split = newPath.split("\\.");
+                    informations.put(split[0], fc.getBoolean(path, false));
+                    hooksEnabled.add(split[0]);
+                }
+            } else {
+                informations.put(newPath, fc.getBoolean(path, false));
+            }
             return;
         }
         ConfigurationSection section = fc.getConfigurationSection(path);
@@ -123,10 +135,14 @@ public class DefaultGestion extends Gestion {
         return hooks;
     }
 
-//    public void setHooks(Map<String, Boolean> hooks) {
-//        this.hooks = hooks;
-//        for (String hook : hooks.keySet()) {
-//            saveSection("Configuration.Hooks." + hook, hooks.get(hook));
-//        }
-//    }
+    public void setHooks(Map<String, Boolean> hooks) {
+        this.hooks = hooks;
+        for (String hook : hooks.keySet()) {
+            if(hooksEnabled.contains(hook)) {
+                saveSection("Configuration.Hooks." + hook + ".Enabled", hooks.get(hook));
+            } else {
+                saveSection("Configuration.Hooks." + hook, hooks.get(hook));
+            }
+        }
+    }
 }

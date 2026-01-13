@@ -93,14 +93,16 @@ public class DefaultGestionTest {
         Assertions.assertFalse(hooks.get("Lands"));
         hooks.replace("PlaceholderAPI", false);
         hooks.replace("WorldGuard", true);
-        //gestion.setHooks(hooks);
-        //hooks = gestion.getHooks();
-        //Assertions.assertTrue(hooks.get("WorldGuard"));
-        //Assertions.assertFalse(hooks.get("PlaceholderAPI"));
+        hooks.replace("Lands", true);
+        gestion.setHooks(hooks);
+        hooks = gestion.getHooks();
+        Assertions.assertTrue(hooks.get("WorldGuard"));
+        Assertions.assertFalse(hooks.get("PlaceholderAPI"));
+        Assertions.assertTrue(hooks.get("Lands"));
 
         gestion.saveSection("Messages", null);
         gestion.saveSection("Debug", null);
-        gestion.saveSection("Hooks", null);
+        gestion.saveSection("Configuration", null);
     }
 
     @Test
