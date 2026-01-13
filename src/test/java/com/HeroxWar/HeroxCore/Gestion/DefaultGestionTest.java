@@ -54,9 +54,15 @@ public class DefaultGestionTest {
         gestion.saveSection("Debug.Enabled", true);
         gestion.saveSection("Debug.Disabled", false);
 
+        gestion.saveSection("Configuration.Hooks.PlaceholderAPI", true);
+        gestion.saveSection("Configuration.Hooks.WorldGuard", false);
+        gestion.saveSection("Configuration.Hooks.Lands.Enabled", false);
+        gestion.saveSection("Configuration.Hooks.Lands.Buy", "BuyText");
+
         gestion.defaultInformations();
 
         Map<String, String> messages = gestion.getMessages();
+        System.out.println(messages);
         Assertions.assertEquals("&a&lPrefix", messages.get("Prefix"));
         Assertions.assertEquals("&a&lBuy", messages.get("Success.Buy"));
         Assertions.assertEquals("&a&lAccept", messages.get("Success.Accept"));
@@ -70,6 +76,7 @@ public class DefaultGestionTest {
         Assertions.assertEquals("Accept", messages.get("Success.Accept"));
 
         Map<String, Boolean> debug = gestion.getDebug();
+        System.out.println(debug);
         Assertions.assertTrue(debug.get("Enabled"));
         Assertions.assertFalse(debug.get("Disabled"));
         debug.replace("Enabled", false);
@@ -79,8 +86,21 @@ public class DefaultGestionTest {
         Assertions.assertFalse(debug.get("Enabled"));
         Assertions.assertTrue(debug.get("Disabled"));
 
+        Map<String,Boolean> hooks = gestion.getHooks();
+        System.out.println(hooks);
+        Assertions.assertTrue(hooks.get("PlaceholderAPI"));
+        Assertions.assertFalse(hooks.get("WorldGuard"));
+        Assertions.assertFalse(hooks.get("Lands"));
+        hooks.replace("PlaceholderAPI", false);
+        hooks.replace("WorldGuard", true);
+        //gestion.setHooks(hooks);
+        //hooks = gestion.getHooks();
+        //Assertions.assertTrue(hooks.get("WorldGuard"));
+        //Assertions.assertFalse(hooks.get("PlaceholderAPI"));
+
         gestion.saveSection("Messages", null);
         gestion.saveSection("Debug", null);
+        gestion.saveSection("Hooks", null);
     }
 
     @Test
