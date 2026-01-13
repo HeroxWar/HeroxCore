@@ -144,6 +144,16 @@ public class Gestion {
     }
 
     /**
+     * Get a value to the specified configuration path
+     * @param path the configuration path from which the value should be retrieved
+     * @return the value associated with the given path, or {@code null} if the path
+     *        does not exist or no value is set
+     */
+    public Object getSection(String path) {
+        return fileConfiguration.get(path);
+    }
+
+    /**
      * Saves the current state of the configuration to the associated file.
      *
      * @throws GestionException if an I/O error occurs while saving the file
