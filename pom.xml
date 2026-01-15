@@ -114,6 +114,8 @@
                             <excludes>
                                 <exclude>com/HeroxWar/HeroxCore/CommentedConfiguration.class</exclude>
                                 <exclude>com/HeroxWar/HeroxCore/ReloadGesture.class</exclude>
+                                <exclude>com/HeroxWar/HeroxCore/Utils/Library.class</exclude>
+                                <exclude>com/HeroxWar/HeroxCore/Utils/UpdateChecker.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
