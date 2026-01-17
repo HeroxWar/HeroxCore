@@ -8,6 +8,8 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultGestionTest {
@@ -103,6 +105,24 @@ public class DefaultGestionTest {
         gestion.saveSection("Messages", null);
         gestion.saveSection("Debug", null);
         gestion.saveSection("Configuration", null);
+    }
+
+    @Test
+    public void listMessages() {
+        List<String> messages = new ArrayList<>();
+        messages.add("0");
+        messages.add("1");
+        messages.add("2");
+        gestion.saveSection("Messages.Top", messages);
+
+        gestion.defaultInformations();
+
+        Map<String, String> messagesMap = gestion.getMessages();
+        Assertions.assertEquals("0", messagesMap.get("Top1"));
+        Assertions.assertEquals("1", messagesMap.get("Top2"));
+        Assertions.assertEquals("2", messagesMap.get("Top3"));
+
+        gestion.saveSection("Messages", null);
     }
 
     @Test

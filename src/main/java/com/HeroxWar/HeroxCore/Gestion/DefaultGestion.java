@@ -71,8 +71,8 @@ public class DefaultGestion extends Gestion {
     private void recursiveBooleanConfiguration(String configurationSection, String path, Map<String, Boolean> informations) {
         if (!fc.isConfigurationSection(path)) {
             String newPath = path.replaceFirst(configurationSection, "");
-            if(newPath.contains(".")) {
-                if(newPath.contains("Enabled")) {
+            if (newPath.contains(".")) {
+                if (newPath.contains("Enabled")) {
                     String[] split = newPath.split("\\.");
                     informations.put(split[0], fc.getBoolean(path, false));
                     hooksEnabled.add(split[0]);
@@ -91,7 +91,14 @@ public class DefaultGestion extends Gestion {
 
     private void recursiveStringConfiguration(String configurationSection, String path, String prefix, Map<String, String> informations) {
         if (!fc.isConfigurationSection(path)) {
-            informations.put(path.replaceFirst(configurationSection, ""), fc.getString(path, "").replace("{prefix}", prefix));
+            if (fc.isList(path)) {
+                List<String> list = fc.getStringList(path);
+                for (int i = 1; i <= list.size(); i++) {
+                    informations.put(path.replaceFirst(configurationSection, "") + i, list.get(i - 1).replace("{prefix}", prefix));
+                }
+            } else {
+                informations.put(path.replaceFirst(configurationSection, ""), fc.getString(path, "").replace("{prefix}", prefix));
+            }
             return;
         }
         ConfigurationSection section = fc.getConfigurationSection(path);
@@ -138,7 +145,7 @@ public class DefaultGestion extends Gestion {
     public void setHooks(Map<String, Boolean> hooks) {
         this.hooks = hooks;
         for (String hook : hooks.keySet()) {
-            if(hooksEnabled.contains(hook)) {
+            if (hooksEnabled.contains(hook)) {
                 saveSection("Configuration.Hooks." + hook + ".Enabled", hooks.get(hook));
             } else {
                 saveSection("Configuration.Hooks." + hook, hooks.get(hook));
