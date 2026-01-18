@@ -1,5 +1,6 @@
 package com.HeroxWar.HeroxCore.Gestion;
 
+import nonapi.io.github.classgraph.utils.Assert;
 import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -57,6 +59,12 @@ public class GestionTest {
         gestion.setConfigFile(gestion.getConfigFile());
         gestion.setFileConfiguration(gestion.getFileConfiguration());
         gestion.toString();
+    }
+
+    @Test
+    public void testCreateFileCustomPath() {
+        gestion = new Gestion(resourcesPathTest.toString(),File.separator + "SubFolder" + "log.yml");
+        Assertions.assertThrows(NullPointerException.class, () -> gestion.createFile("SubFolder/log.yml", Bukkit.getPluginManager().getPlugin("Tombs"), ""));
     }
 
 }

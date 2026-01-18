@@ -74,6 +74,71 @@ public class Gestion {
     /**
      * Creates the configuration file if it does not exist and synchronizes it
      * with the plugin's internal resource.
+     *
+     * This method use a custom path for the creation if you don't use the default folder location
+     * Ex. config.yml is in the main folder
+     * Ex. Challenges/BlockPlace.yml is in the Challenges folder
+     * 
+     * <p>
+     * Any I/O error occurring during file creation or synchronization will result
+     * in a {@link GestionException}.
+     *
+     * @param plugin          the Bukkit plugin instance
+     * @param ignoredSections configuration sections to exclude from synchronization
+     * @throws GestionException if an I/O error occurs
+     */
+    public void createFile(String customPath, Plugin plugin, String... ignoredSections) {
+        if (!configFile.exists()) {
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            try {
+                plugin.saveResource(customPath, false);
+                inputStream = plugin.getResource(customPath);
+
+                // write the inputStream to a FileOutputStream
+                outputStream = new FileOutputStream(configFile);
+
+                int read;
+                byte[] bytes = new byte[1024];
+
+                while ((read = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+            } catch (IOException e) {
+                Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create " + configFile.getName() + "!");
+                throw new GestionException(e.getMessage());
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        throw new GestionException(e.getMessage());
+                    }
+                }
+                if (outputStream != null) {
+                    try {
+                        // outputStream.flush();
+                        outputStream.close();
+                    } catch (IOException e) {
+                        throw new GestionException(e.getMessage());
+                    }
+                }
+            }
+        }
+
+        CommentedConfiguration cfg = CommentedConfiguration.loadConfiguration(configFile);
+
+        try {
+            cfg.syncWithConfig(configFile, plugin.getResource(customPath), ignoredSections);
+        } catch (IOException e) {
+            throw new GestionException(e.getMessage());
+        }
+        fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    /**
+     * Creates the configuration file if it does not exist and synchronizes it
+     * with the plugin's internal resource.
      * <p>
      * Any I/O error occurring during file creation or synchronization will result
      * in a {@link GestionException}.
