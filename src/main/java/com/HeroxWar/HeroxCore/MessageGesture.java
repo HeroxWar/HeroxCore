@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * The MessageGesturePaper class provides more features and is more efficient than this class.
  * This class will be removed in a future update.
  */
-@Deprecated(since= "19-02-2026")
+@Deprecated(since = "19-02-2026")
 public class MessageGesture {
 
     // Simple color converter
