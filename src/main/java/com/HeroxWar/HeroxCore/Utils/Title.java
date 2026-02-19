@@ -184,13 +184,13 @@ public class Title {
      */
     public void sendRich(Player player) {
         try {
-            Component _mainTitle  = messageGesturePaper.applyColor(messageGesturePaper.translate(player, title));
+            Component _mainTitle = messageGesturePaper.applyColor(messageGesturePaper.translate(player, title));
             Component _subtitle = messageGesturePaper.applyColor(messageGesturePaper.translate(player, subtitle));
             final net.kyori.adventure.title.Title.Times times = net.kyori.adventure.title.Title.Times.times(Duration.ofMillis(fadeInTime), Duration.ofMillis(stayTime), Duration.ofMillis(fadeOutTime));
 
             final net.kyori.adventure.title.Title title = net.kyori.adventure.title.Title.title(_mainTitle, _subtitle, times);
 
-            player.showTitle(title);
+            messageGesturePaper.getAdventure().player(player).showTitle(title);
         } catch (Exception e) {
             messageGesturePaper.getInternalLogger().log(Level.SEVERE, "Something went wrong while sending title to player " + player.getName() + ": " + e.getMessage());
         }

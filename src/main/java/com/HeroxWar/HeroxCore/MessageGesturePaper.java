@@ -1,15 +1,17 @@
 package com.HeroxWar.HeroxCore;
 
 import com.HeroxWar.HeroxCore.Utils.ColoredLogger;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -22,14 +24,22 @@ public class MessageGesturePaper {
     final boolean printDebug;
     final boolean isPlaceholderAPIEnabled;
     final ColoredLogger internalLogger;
+    BukkitAudiences adventure;
 
-    public MessageGesturePaper(String pluginName, String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled) {
+
+    public MessageGesturePaper(String pluginName, String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
         this.pluginName = pluginName;
         this.prefix = prefix;
         this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + pluginName + " &4DEBUG &8>&7>\n\n";
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         internalLogger = new ColoredLogger("[" + pluginName + "] ");
+        // Initialize an audiences instance for the plugin
+        this.adventure = BukkitAudiences.create(plugin);
+    }
+
+    public BukkitAudiences getAdventure() {
+        return adventure;
     }
 
     public ColoredLogger getInternalLogger() {
@@ -95,7 +105,7 @@ public class MessageGesturePaper {
     }
 
     public void sendMessage(Player player, Component MESSAGE, boolean usePrefix) {
-        player.sendMessage(MESSAGE);
+        adventure.player(player).sendMessage(MESSAGE);
     }
 
     public String translate(String text) {
