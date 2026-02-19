@@ -6,6 +6,12 @@ import org.bukkit.command.CommandSender;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class is deprecated and should not be used. It is recommended to use the MessageGesturePaper class instead.
+ * The MessageGesturePaper class provides more features and is more efficient than this class.
+ * This class will be removed in a future update.
+ */
+@Deprecated(since= "19-02-2026")
 public class MessageGesture {
 
     // Simple color converter
