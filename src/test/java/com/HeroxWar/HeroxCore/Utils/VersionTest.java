@@ -46,4 +46,18 @@ public class VersionTest {
         Assertions.assertFalse(version.isInRange(18, 20));
     }
 
+    @Test
+    public void testVersion26() {
+        version.setServerVersion("MockBukkit (MC: 26.1)");
+        Assertions.assertTrue(version.isEquals(26));
+        Assertions.assertFalse(version.isEquals(25));
+    }
+
+    @Test
+    public void testMatchRangeVersion26() {
+        version.setServerVersion("MockBukkit (MC: 26.1)");
+        Assertions.assertTrue(version.isInRange(21, 26));
+        Assertions.assertFalse(version.isInRange(21, 25));
+    }
+
 }
