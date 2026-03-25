@@ -79,6 +79,10 @@ public class MessageGesturePaper {
             this.internalLogger.log(Level.INFO, debugPrefixSuffix + MESSAGE + debugPrefixSuffix);
     }
 
+    public void log(String MESSAGE, Level level) {
+        this.internalLogger.log(level, MESSAGE);
+    }
+
     public void sendMessage(String MESSAGE) {
         sendMessage(Bukkit.getConsoleSender(), MESSAGE, true);
     }
@@ -93,7 +97,7 @@ public class MessageGesturePaper {
 
     public void sendMessage(CommandSender sender, String MESSAGE, boolean usePrefix) {
         if (sender instanceof ConsoleCommandSender) {
-            //.internalLogger.log(Level.INFO, applyColorLegacy(MESSAGE), usePrefix);
+            this.internalLogger.log(Level.INFO, applyColorLegacy(MESSAGE), usePrefix);
         } else {
             sendMessage((Player) sender, MESSAGE, usePrefix);
         }
