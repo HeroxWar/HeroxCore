@@ -18,13 +18,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MessageGesturePaper {
-    final String pluginName;
-    final String debugPrefixSuffix;
-    final String prefix;
-    final boolean printDebug;
-    final boolean isPlaceholderAPIEnabled;
-    final ColoredLogger internalLogger;
-    BukkitAudiences adventure;
+
+    private String pluginName;
+    private String debugPrefixSuffix;
+    private String prefix;
+    private boolean printDebug;
+    private boolean isPlaceholderAPIEnabled;
+    private ColoredLogger internalLogger;
+    private BukkitAudiences adventure = null;
+    private static final Pattern hexPattern = Pattern.compile("&#[a-fA-F0-9]{6}");
 
 
     public MessageGesturePaper(String pluginName, String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
@@ -35,7 +37,9 @@ public class MessageGesturePaper {
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         internalLogger = new ColoredLogger("[" + pluginName + "] ");
         // Initialize an audiences instance for the plugin
-        this.adventure = BukkitAudiences.create(plugin);
+        if(plugin != null) {
+            this.adventure = BukkitAudiences.create(plugin);
+        }
     }
 
     public BukkitAudiences getAdventure() {
@@ -54,8 +58,6 @@ public class MessageGesturePaper {
         }
     }
 
-    private final Pattern hexPattern = Pattern.compile("&#[a-fA-F0-9]{6}");
-
     public Component applyColor(String message) {
         TextComponent content = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
         String serializedContent = MiniMessage.miniMessage().serialize(content);
@@ -71,6 +73,8 @@ public class MessageGesturePaper {
             message = message.replace("&" + color, "" + net.md_5.bungee.api.ChatColor.of(color));
             matcher = hexPattern.matcher(message);
         }
+        System.out.println(message);
+        System.out.println(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message));
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
     }
 
@@ -104,8 +108,12 @@ public class MessageGesturePaper {
     }
 
     public void sendMessage(Player player, String MESSAGE, boolean usePrefix) {
-        Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
-        sendMessage(player, componentMessage, usePrefix);
+        if(adventure != null) {
+            Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
+            sendMessage(player, componentMessage, usePrefix);
+        } else {
+            player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+        }
     }
 
     public void sendMessage(Player player, Component MESSAGE, boolean usePrefix) {
