@@ -303,6 +303,20 @@ public class Time {
         return time.getMilliseconds() > getMilliseconds();
     }
 
+
+    /**
+     * This method return the difference between instances
+     * Ex. currentTime = [0,0,0,60], times = [0,0,0,59] -> new instance [0,0,0,1]
+     *
+     * P.S. if the time passed is bigger than the current instance, the result will be negative
+     *
+     * @param time the other object to subtract
+     * @return a time instance with the difference
+     */
+    public Time differenceBetweenAllowNegative(Time time) {
+        return new Time(time.getMilliseconds() - getMilliseconds(), formatter);
+    }
+
     /**
      * This method returns the difference between instances
      * Ex. currentTime = [0,0,0,60], times = [0,0,0,59] -> new instance [0,0,0,1]
@@ -329,6 +343,22 @@ public class Time {
      */
     public void difference(Time time) {
         Time timeToReturn = differenceBetween(time);
+        setDays(timeToReturn.getDays());
+        setHours(timeToReturn.getHours());
+        setMinutes(timeToReturn.getMinutes());
+        setSeconds(timeToReturn.getSeconds());
+    }
+
+    /**
+     * This method returns the difference between the current instance and an instance passed
+     * Ex. currentTime = [0,0,0,60], times = [0,0,0,59] -> currentTime [0,0,0,1]
+     *
+     * P.S. if the time passed is bigger than the current instance, the result will be negative
+     *
+     * @param time the other object to subtract
+     */
+    public void differenceAllowNegative(Time time) {
+        Time timeToReturn = differenceBetweenAllowNegative(time);
         setDays(timeToReturn.getDays());
         setHours(timeToReturn.getHours());
         setMinutes(timeToReturn.getMinutes());
