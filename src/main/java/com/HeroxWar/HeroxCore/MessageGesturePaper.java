@@ -157,7 +157,7 @@ public class MessageGesturePaper {
 
     public void sendMessage(CommandSender sender, String MESSAGE, boolean usePrefix) {
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage(applyColorLegacy(translate(sender, (usePrefix ? this.prefix : "") + MESSAGE)));
+            //sender.sendMessage(applyColorLegacy(translate(sender, (usePrefix ? this.prefix : "") + MESSAGE)));
             this.internalLogger.log(Level.INFO, MESSAGE, usePrefix);
         } else {
             sendMessage((Player) sender, MESSAGE, usePrefix);
