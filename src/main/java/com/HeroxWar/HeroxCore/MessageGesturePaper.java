@@ -19,27 +19,85 @@ import java.util.regex.Pattern;
 
 public class MessageGesturePaper {
 
-    private String pluginName;
+    private static final Pattern hexPattern = Pattern.compile("&#[a-fA-F0-9]{6}");
+
     private String debugPrefixSuffix;
     private String prefix;
     private boolean printDebug;
     private boolean isPlaceholderAPIEnabled;
     private ColoredLogger internalLogger;
     private BukkitAudiences adventure = null;
-    private static final Pattern hexPattern = Pattern.compile("&#[a-fA-F0-9]{6}");
 
-
-    public MessageGesturePaper(String pluginName, String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
-        this.pluginName = pluginName;
-        this.prefix = prefix;
-        this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + pluginName + " &4DEBUG &8>&7>\n\n";
+    public MessageGesturePaper(boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
-        internalLogger = new ColoredLogger("[" + pluginName + "] ");
+        // Initialize an audiences instance for the plugin
+        if(plugin != null) {
+            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + plugin.getName() + " &4DEBUG &8>&7>\n\n";
+            this.internalLogger = new ColoredLogger("[" + plugin.getName() + "] ");
+            this.adventure = BukkitAudiences.create(plugin);
+        } else {
+            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &eHeroxPlugin &4DEBUG &8>&7>\n\n";
+            this.internalLogger = new ColoredLogger("[HeroxPlugin] ");
+        }
+    }
+
+    public MessageGesturePaper(String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
+        this.prefix = prefix;
+        this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + prefix + " &4DEBUG &8>&7>\n\n";
+        this.printDebug = printDebug;
+        this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
+        internalLogger = new ColoredLogger("[" + prefix + "] ");
         // Initialize an audiences instance for the plugin
         if(plugin != null) {
             this.adventure = BukkitAudiences.create(plugin);
         }
+    }
+
+    public String getDebugPrefixSuffix() {
+        return debugPrefixSuffix;
+    }
+
+    public void setDebugPrefixSuffix(String debugPrefixSuffix) {
+        this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + prefix + " &4DEBUG &8>&7>\n\n";
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+        setDebugPrefixSuffix(prefix);
+        setInternalLogger(prefix);
+    }
+
+    public boolean isPrintDebug() {
+        return printDebug;
+    }
+
+    public void setPrintDebug(boolean printDebug) {
+        this.printDebug = printDebug;
+    }
+
+    public boolean isPlaceholderAPIEnabled() {
+        return isPlaceholderAPIEnabled;
+    }
+
+    public void setPlaceholderAPIEnabled(boolean placeholderAPIEnabled) {
+        isPlaceholderAPIEnabled = placeholderAPIEnabled;
+    }
+
+    public void setInternalLogger(ColoredLogger internalLogger) {
+        this.internalLogger = internalLogger;
+    }
+
+    public void setInternalLogger(String prefix) {
+        this.internalLogger = new ColoredLogger("[" + prefix + "] ");
+    }
+
+    public void setAdventure(BukkitAudiences adventure) {
+        this.adventure = adventure;
     }
 
     public BukkitAudiences getAdventure() {
