@@ -7,6 +7,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -131,16 +132,7 @@ public class MessageGesturePaper {
             message = message.replace("&" + color, "" + net.md_5.bungee.api.ChatColor.of(color));
             matcher = hexPattern.matcher(message);
         }
-        
-        // Handle formatting codes manually if translateAlternateColorCodes doesn't work
-        message = message.replace("&l", net.md_5.bungee.api.ChatColor.BOLD.toString());
-        message = message.replace("&n", net.md_5.bungee.api.ChatColor.UNDERLINE.toString());
-        message = message.replace("&m", net.md_5.bungee.api.ChatColor.STRIKETHROUGH.toString());
-        message = message.replace("&o", net.md_5.bungee.api.ChatColor.ITALIC.toString());
-        message = message.replace("&k", net.md_5.bungee.api.ChatColor.MAGIC.toString());
-        message = message.replace("&r", net.md_5.bungee.api.ChatColor.RESET.toString());
-        
-        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public void logDebug(String MESSAGE) {
