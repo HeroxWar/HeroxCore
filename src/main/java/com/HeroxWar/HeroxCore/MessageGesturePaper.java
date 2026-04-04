@@ -131,6 +131,15 @@ public class MessageGesturePaper {
             message = message.replace("&" + color, "" + net.md_5.bungee.api.ChatColor.of(color));
             matcher = hexPattern.matcher(message);
         }
+        
+        // Handle formatting codes manually if translateAlternateColorCodes doesn't work
+        message = message.replace("&l", net.md_5.bungee.api.ChatColor.BOLD.toString());
+        message = message.replace("&n", net.md_5.bungee.api.ChatColor.UNDERLINE.toString());
+        message = message.replace("&m", net.md_5.bungee.api.ChatColor.STRIKETHROUGH.toString());
+        message = message.replace("&o", net.md_5.bungee.api.ChatColor.ITALIC.toString());
+        message = message.replace("&k", net.md_5.bungee.api.ChatColor.MAGIC.toString());
+        message = message.replace("&r", net.md_5.bungee.api.ChatColor.RESET.toString());
+        
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
     }
 
@@ -157,7 +166,6 @@ public class MessageGesturePaper {
 
     public void sendMessage(CommandSender sender, String MESSAGE, boolean usePrefix) {
         if (sender instanceof ConsoleCommandSender) {
-            //sender.sendMessage(applyColorLegacy(translate(sender, (usePrefix ? this.prefix : "") + MESSAGE)));
             this.internalLogger.log(Level.INFO, MESSAGE, usePrefix);
         } else {
             sendMessage((Player) sender, MESSAGE, usePrefix);
