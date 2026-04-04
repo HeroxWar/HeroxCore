@@ -1,7 +1,6 @@
 package com.HeroxWar.HeroxCore;
 
 import com.test.utils.PrintMessage;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +37,13 @@ public class MessageGesturePaperTest {
     @Test
     public void testInternalLogger() {
         messageGesturePaper.sendBroadcast("&7&lTest");
-        System.out.println(Arrays.toString(printMessage.getAllPlayerMessages(playerMock).toArray()));
+        System.out.println(Arrays.toString(printMessage.getAllMessages(playerMock).toArray()));
     }
 
     @Test
     public void testConsoleMessage() {
         messageGesturePaper.sendMessage("&7&lTest");
+        System.out.println(Arrays.toString(printMessage.getAllMessages(serverMock.getConsoleSender()).toArray()));
     }
 
 }
