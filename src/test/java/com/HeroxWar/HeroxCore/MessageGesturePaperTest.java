@@ -25,7 +25,7 @@ public class MessageGesturePaperTest {
         serverMock = MockBukkit.mock();
         playerMock = serverMock.addPlayer();
         printMessage = new PrintMessage(serverMock);
-        messageGesturePaper = new MessageGesturePaper("HeroxCore", "", false, false, null);
+        messageGesturePaper = new MessageGesturePaper("HeroxCore", false, false, null);
     }
 
     @AfterEach
