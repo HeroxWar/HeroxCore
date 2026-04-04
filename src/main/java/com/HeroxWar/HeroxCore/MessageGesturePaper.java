@@ -73,8 +73,6 @@ public class MessageGesturePaper {
             message = message.replace("&" + color, "" + net.md_5.bungee.api.ChatColor.of(color));
             matcher = hexPattern.matcher(message);
         }
-        System.out.println(message);
-        System.out.println(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message));
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
     }
 
@@ -101,7 +99,8 @@ public class MessageGesturePaper {
 
     public void sendMessage(CommandSender sender, String MESSAGE, boolean usePrefix) {
         if (sender instanceof ConsoleCommandSender) {
-            this.internalLogger.log(Level.INFO, applyColorLegacy(MESSAGE), usePrefix);
+            sender.sendMessage(applyColorLegacy(translate(sender, (usePrefix ? this.prefix : "") + MESSAGE)));
+            this.internalLogger.log(Level.INFO, MESSAGE, usePrefix);
         } else {
             sendMessage((Player) sender, MESSAGE, usePrefix);
         }
