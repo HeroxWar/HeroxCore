@@ -94,7 +94,7 @@ public class MessageGesturePaper {
     }
 
     public void setInternalLogger(String prefix) {
-        this.internalLogger = new ColoredLogger("[" + prefix + "] ");
+        this.internalLogger = new ColoredLogger("[" + applyColorLegacy(prefix) + "] ");
     }
 
     public void setAdventure(BukkitAudiences adventure) {
