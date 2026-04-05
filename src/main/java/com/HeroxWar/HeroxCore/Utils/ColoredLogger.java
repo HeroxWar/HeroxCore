@@ -68,7 +68,7 @@ public class ColoredLogger {
 
     // Log with optional prefix
     public void log(Level level, String message, boolean usePrefix) {
-        LOGGER.log(level, () -> (usePrefix ? prefix : "") + convertStringMessage(message));
+        LOGGER.log(level, () -> (usePrefix ? convertStringMessage(prefix) : "") + convertStringMessage(message));
     }
 
     // Log with exception
