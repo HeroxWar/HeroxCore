@@ -45,6 +45,11 @@ public class ColoredLogger {
         ANSI_COLOR_MAP.put('d', "\u001B[95m"); // Light Purple
         ANSI_COLOR_MAP.put('e', "\u001B[93m"); // Yellow
         ANSI_COLOR_MAP.put('f', "\u001B[97m"); // White
+        ANSI_COLOR_MAP.put('l', "\u001B[1m"); // Bold
+        ANSI_COLOR_MAP.put('o', "\u001B[3m"); // Italic
+        ANSI_COLOR_MAP.put('n', "\u001B[4m"); // Underline
+        ANSI_COLOR_MAP.put('m', "\u001B[9m"); // Strikethrough
+        ANSI_COLOR_MAP.put('r', "\u001B[0m"); // Reset
     }
 
     public ColoredLogger(String prefix) {
