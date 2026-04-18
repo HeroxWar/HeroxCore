@@ -64,7 +64,7 @@ public class GestionTest {
     @Test
     public void testCreateFileCustomPath() {
         gestion = new Gestion(resourcesPathTest.toString(),File.separator + "SubFolder" + "log.yml");
-        Assertions.assertThrows(NullPointerException.class, () -> gestion.createFile("SubFolder/log.yml", Bukkit.getPluginManager().getPlugin("Tombs"), ""));
+        Assertions.assertThrows(NullPointerException.class, () -> gestion.createFile("resources/config.yml", Bukkit.getPluginManager().getPlugin("Tombs"), ""));
     }
 
 }

@@ -14,6 +14,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -152,10 +153,6 @@ public class MessageGesturePaper {
         sendMessage(sender, MESSAGE, false);
     }
 
-    public void sendMessage(Player player, String MESSAGE) {
-        sendMessage(player, MESSAGE, false);
-    }
-
     public void sendMessage(CommandSender sender, String MESSAGE, boolean usePrefix) {
         if (sender instanceof ConsoleCommandSender) {
             this.internalLogger.log(Level.INFO, MESSAGE, usePrefix);
@@ -167,21 +164,19 @@ public class MessageGesturePaper {
     public void sendMessage(Player player, String MESSAGE, boolean usePrefix) {
         if(adventure != null) {
             Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
-            sendMessage(player, componentMessage, usePrefix);
+            sendMessage(player, componentMessage);
         } else {
             player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
         }
     }
 
-    public void sendMessage(Player player, Component MESSAGE, boolean usePrefix) {
+    public void sendMessage(Player player, Component MESSAGE) {
         adventure.player(player).sendMessage(MESSAGE);
     }
 
     public String translate(String text) {
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-                return translate(p, text);
-            }
+            return translate(new ArrayList<>(Bukkit.getServer().getOnlinePlayers()).get(0), text);
         }
         return text;
     }

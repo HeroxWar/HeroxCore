@@ -121,8 +121,6 @@ public class ReloadGesture {
             if(target != null) {
                 target.onLoad();
                 Bukkit.getPluginManager().enablePlugin(target);
-            } else {
-                MessageGesture.sendMessage(Bukkit.getServer().getConsoleSender(), "&cError with plugin " + name + ", is not possible to load it, please use Plugman or reload the server");
             }
 
         }
@@ -178,7 +176,6 @@ public class ReloadGesture {
 
     public static void reload(String pluginName) {
         unload(pluginName);
-        MessageGesture.sendMessage(Bukkit.getServer().getConsoleSender(), "Unloading '" + pluginName + "' plugin");
         load(pluginName);
     }
 

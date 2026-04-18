@@ -314,7 +314,7 @@ public class Time {
      * @return a time instance with the difference
      */
     public Time differenceBetweenAllowNegative(Time time) {
-        return new Time(time.getMilliseconds() - getMilliseconds(), formatter);
+        return new Time(getMilliseconds() - time.getMilliseconds(), formatter);
     }
 
     /**

@@ -14,38 +14,20 @@ public class PrintMessage {
         this.serverMock = serverMock;
     }
 
-    public List<String> getAllMessages(ConsoleCommandSenderMock consoleCommandSenderMock) {
+    public List<String> getAllPlayerMessages(PlayerMock playerMock) {
         List<String> messages = new ArrayList<>();
-        String message = getMessage(consoleCommandSenderMock);
-        while (message != null) {
-            messages.add(message);
-            message = getMessage(consoleCommandSenderMock);
-        }
-        return messages;
-    }
-
-    public String getMessage(ConsoleCommandSenderMock consoleCommandSenderMock) {
-        String message = consoleCommandSenderMock.nextMessage();
-        int count = 0;
-        while (message == null) {
+        int maxAttempts = 100;
+        int attempts = 0;
+        
+        while (attempts < maxAttempts) {
             serverMock.getScheduler().performTicks(20L);
-            message = consoleCommandSenderMock.nextMessage();
-            if(message == null) {
-                count++;
-                if(count == 100) {
-                    break;
-                }
+            String message = playerMock.nextMessage();
+            if (message != null) {
+                messages.add(message);
+                attempts = 0; // Reset counter when we find a message
+            } else {
+                attempts++;
             }
-        }
-        return message;
-    }
-
-    public List<String> getAllMessages(PlayerMock playerMock) {
-        List<String> messages = new ArrayList<>();
-        String message = getMessage(playerMock);
-        while (message != null) {
-            messages.add(message);
-            message = getMessage(playerMock);
         }
         return messages;
     }
