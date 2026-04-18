@@ -1,4 +1,4 @@
-package com.HeroxWar.HeroxCore.Dialog;
+package com.HeroxWar.HeroxCore.Utils;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.dialog.DialogBase;
@@ -10,13 +10,13 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
-public class HeroxDialogTest {
+public class DialogTest {
 
     private static ServerMock serverMock;
 
     // Fake Instances
     private PlayerMock playerMock;
-    private HeroxDialog dialog = new HeroxDialog();
+    private Dialog dialog = new Dialog();
 
     @BeforeEach
     public void setUp() {
@@ -33,7 +33,7 @@ public class HeroxDialogTest {
 
     @Test
     public void createDialog() {
-        HeroxDialog heroxDialog = new HeroxDialog();
+        Dialog heroxDialog = new Dialog();
         Assertions.assertEquals(dialog.getTitle(), heroxDialog.getTitle());
         Assertions.assertEquals(dialog.getContent(), heroxDialog.getContent());
         Assertions.assertEquals(dialog.getBase(), heroxDialog.getBase());
@@ -41,7 +41,7 @@ public class HeroxDialogTest {
 
     @Test
     public void createCustomDialog() {
-        dialog = new HeroxDialog("ASD","");
+        dialog = new Dialog("ASD","");
         Assertions.assertEquals("§fASD", dialog.getTitle().toLegacyText());
         Assertions.assertEquals("§f", dialog.getContent().toLegacyText());
         Assertions.assertEquals("§fASD", dialog.getBase().title().toLegacyText());

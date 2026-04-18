@@ -243,4 +243,10 @@ public class TimeTest {
         Assertions.assertEquals(expected, time.toString());
     }
 
+    @Test
+    public void testDifferenceAllowNegative() {
+        time.differenceAllowNegative(new Time(1000000L, '.'));
+        Assertions.assertTrue(time.getMilliseconds() < 0);
+    }
+
 }

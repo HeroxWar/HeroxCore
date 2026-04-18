@@ -1,11 +1,10 @@
-package com.HeroxWar.HeroxCore.Dialog;
+package com.HeroxWar.HeroxCore.Utils;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.dialog.Dialog;
 import net.md_5.bungee.api.dialog.DialogBase;
 
-public class HeroxDialog implements Dialog {
+public class Dialog implements net.md_5.bungee.api.dialog.Dialog {
 
     private DialogBase dialogBase;
     private BaseComponent title;
@@ -14,7 +13,7 @@ public class HeroxDialog implements Dialog {
     /**
      * Costruttore base con titolo e contenuto predefiniti
      */
-    public HeroxDialog() {
+    public Dialog() {
         this("§6§lDialogo Herox", "§7Contenuto di default del dialogo.");
     }
 
@@ -24,7 +23,7 @@ public class HeroxDialog implements Dialog {
      * @param title    Titolo del dialogo
      * @param content  Contenuto/descrizione del dialogo
      */
-    public HeroxDialog(String title, String content) {
+    public Dialog(String title, String content) {
         this.title = new TextComponent(title);
         this.content = new TextComponent(content);
 

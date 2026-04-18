@@ -63,7 +63,7 @@ public class ColoredLogger {
 
     // Basic log with prefix
     public void log(Level level, String message) {
-        LOGGER.log(level, () -> prefix + convertStringMessage(message));
+        LOGGER.log(level, () -> convertStringMessage(prefix) + convertStringMessage(message));
     }
 
     // Log with optional prefix
@@ -73,12 +73,12 @@ public class ColoredLogger {
 
     // Log with exception
     public void log(Level level, String message, Throwable e) {
-        LOGGER.log(level, prefix + convertStringMessage(message), e);
+        LOGGER.log(level, convertStringMessage(prefix) + convertStringMessage(message), e);
     }
 
     // Log using a Supplier
     public void log(Level level, Supplier<String> msgSupplier) {
-        LOGGER.log(level, () -> prefix + convertStringMessage(msgSupplier.get()));
+        LOGGER.log(level, () -> convertStringMessage(prefix) + convertStringMessage(msgSupplier.get()));
     }
 
     // Convert Minecraft-style color codes (&a, &c, etc.) to ANSI escape sequences

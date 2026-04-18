@@ -148,52 +148,7 @@ public class Gestion {
      * @throws GestionException if an I/O error occurs
      */
     public void createFile(Plugin plugin, String... ignoredSections) throws GestionException {
-        if (!configFile.exists()) {
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-            try {
-                plugin.saveResource(configFile.getName(), false);
-                inputStream = plugin.getResource(configFile.getName());
-
-                // write the inputStream to a FileOutputStream
-                outputStream = new FileOutputStream(configFile);
-
-                int read;
-                byte[] bytes = new byte[1024];
-
-                while ((read = inputStream.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-            } catch (IOException e) {
-                Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create " + configFile.getName() + "!");
-                throw new GestionException(e.getMessage());
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        throw new GestionException(e.getMessage());
-                    }
-                }
-                if (outputStream != null) {
-                    try {
-                        // outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        throw new GestionException(e.getMessage());
-                    }
-                }
-            }
-        }
-
-        CommentedConfiguration cfg = CommentedConfiguration.loadConfiguration(configFile);
-
-        try {
-            cfg.syncWithConfig(configFile, plugin.getResource(configFile.getName()), ignoredSections);
-        } catch (IOException e) {
-            throw new GestionException(e.getMessage());
-        }
-        fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+        createFile(configFile.getName(), plugin, ignoredSections);
     }
 
     /**
