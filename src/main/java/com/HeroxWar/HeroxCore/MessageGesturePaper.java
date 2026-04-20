@@ -34,7 +34,7 @@ public class MessageGesturePaper {
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         // Initialize an audiences instance for the plugin
-        if(plugin != null) {
+        if (plugin != null) {
             this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + plugin.getName() + " &4DEBUG &8>&7>\n\n";
             this.internalLogger = new ColoredLogger("[" + plugin.getName() + "] ");
             this.adventure = BukkitAudiences.create(plugin);
@@ -51,7 +51,7 @@ public class MessageGesturePaper {
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         internalLogger = new ColoredLogger("[" + prefix + "] ");
         // Initialize an audiences instance for the plugin
-        if(plugin != null) {
+        if (plugin != null) {
             this.adventure = BukkitAudiences.create(plugin);
         }
     }
@@ -136,9 +136,13 @@ public class MessageGesturePaper {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public void logDebug(String MESSAGE) {
-        if (this.printDebug)
+    public void logDebug(String MESSAGE, boolean printDebug) {
+        if (printDebug)
             this.internalLogger.log(Level.INFO, debugPrefixSuffix + MESSAGE + debugPrefixSuffix);
+    }
+
+    public void logDebug(String MESSAGE) {
+        logDebug(MESSAGE, this.printDebug);
     }
 
     public void log(String MESSAGE, Level level) {
@@ -162,7 +166,7 @@ public class MessageGesturePaper {
     }
 
     public void sendMessage(Player player, String MESSAGE, boolean usePrefix) {
-        if(adventure != null) {
+        if (adventure != null) {
             Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
             sendMessage(player, componentMessage);
         } else {
