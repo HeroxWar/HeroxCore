@@ -249,4 +249,47 @@ public class TimeTest {
         Assertions.assertTrue(time.getMilliseconds() < 0);
     }
 
+    @Test
+    public void testGetTimeFormatted() {
+        time = new Time(20, ':');
+        String timeForm = time.getTimeFormatted();
+        Assertions.assertEquals("0d:0h:0m:1s", timeForm);
+    }
+
+    @Test
+    public void testGetTimeFormattedFormatter() {
+        time = new Time(20, ':');
+        String timeForm = time.getTimeFormatted(" ");
+        Assertions.assertEquals("0d 0h 0m 1s", timeForm);
+    }
+
+    @Test
+    public void testGetArrayTimeString() {
+        time = new Time(20, ':');
+        List<String> times = time.getArrayTimeString();
+        Assertions.assertEquals("0d", times.get(0));
+        Assertions.assertEquals("0h", times.get(1));
+        Assertions.assertEquals("0m", times.get(2));
+        Assertions.assertEquals("1s", times.get(3));
+    }
+
+    @Test
+    public void testGetArrayTimeWithoutZeroString() {
+        time = new Time(20, ':');
+        List<String> times = time.getArrayTimeWithoutZeroString();
+        Assertions.assertEquals("1s", times.get(0));
+    }
+
+    @Test
+    public void testGetTimeWithoutZerosString() {
+        time = new Time(100000,':');
+        Assertions.assertEquals("1h:23m:20s", time.getTimeWithoutZerosString());
+    }
+
+    @Test
+    public void testGetTimeWithoutZerosStringFormatted() {
+        time = new Time(100000,' ');
+        Assertions.assertEquals("1h 23m 20s", time.getTimeWithoutZerosString());
+    }
+
 }
