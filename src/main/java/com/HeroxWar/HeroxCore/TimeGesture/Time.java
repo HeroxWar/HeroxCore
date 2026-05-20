@@ -211,10 +211,38 @@ public class Time {
     /**
      * This method formats the informations in a String
      *
+     * @return the formatted informations in this way: 0d:0h:0m:0s
+     */
+    public String getTimeFormatted() {
+        return days + "d" + formatter + hours +"h" + formatter + minutes + "m" + formatter + seconds + "s";
+    }
+
+    /**
+     * This method formats the informations in a String
+     *
+     * @param formatter the formatter you want to use, for example: "-"
+     * @return the formatted informations in this way: 0d-0h-0m-0s
+     */
+    public String getTimeFormatted(String formatter) {
+        return days + "d" + formatter + hours +"h" + formatter + minutes + "m" + formatter + seconds + "s";
+    }
+
+    /**
+     * This method formats the informations in a String
+     *
      * @return the formatted informations in this way: 20:10
      */
     public String getTimeWithoutZeros() {
         return getTimeWithoutZeros(formatter);
+    }
+
+    /**
+     * This method formats the informations in a String
+     *
+     * @return the formatted informations in this way: 20m:10s
+     */
+    public String getTimeWithoutZerosString() {
+        return getTimeWithoutZerosString(formatter);
     }
 
     /**
@@ -228,6 +256,26 @@ public class Time {
         boolean found = true;
         for (long partTime : getArrayTime()) {
             if (partTime == 0 && found) {
+                continue;
+            }
+            found = false;
+            time.append(partTime).append(formatter);
+        }
+        time = new StringBuilder(time.substring(0, time.length() - 1));
+        return time.toString();
+    }
+
+    /**
+     * This method formats the informations in a String
+     *
+     * @param formatter the formatter you want to use, for example: " "
+     * @return the formatted informations in this way: 20m 10s
+     */
+    public String getTimeWithoutZerosString(char formatter) {
+        StringBuilder time = new StringBuilder();
+        boolean found = true;
+        for (String partTime : getArrayTimeString()) {
+            if (partTime.contains("0") && found) {
                 continue;
             }
             found = false;
@@ -252,6 +300,20 @@ public class Time {
     }
 
     /**
+     * This method returns the informations in an Array of String
+     *
+     * @return the informations in this way: [0d,0h,0m,0s]
+     */
+    public List<String> getArrayTimeString() {
+        List<String> informations = new ArrayList<>();
+        informations.add(days + "d");
+        informations.add(hours + "h");
+        informations.add(minutes + "m");
+        informations.add(seconds + "s");
+        return informations;
+    }
+
+    /**
      * This method returns the informations in an Array of Longs
      *
      * @return the informations in this way: [20,40]
@@ -261,6 +323,24 @@ public class Time {
         boolean found = true;
         while (found) {
             if (informations.get(0) == 0) {
+                informations.remove(0);
+                continue;
+            }
+            found = false;
+        }
+        return informations;
+    }
+
+    /**
+     * This method returns the informations in an Array of Strings
+     *
+     * @return the informations in this way: [20m,40s]
+     */
+    public List<String> getArrayTimeWithoutZeroString() {
+        List<String> informations = getArrayTimeString();
+        boolean found = true;
+        while (found) {
+            if (informations.get(0).contains("0")) {
                 informations.remove(0);
                 continue;
             }
@@ -307,7 +387,7 @@ public class Time {
     /**
      * This method return the difference between instances
      * Ex. currentTime = [0,0,0,60], times = [0,0,0,59] -> new instance [0,0,0,1]
-     *
+     * <p>
      * P.S. if the time passed is bigger than the current instance, the result will be negative
      *
      * @param time the other object to subtract
@@ -352,7 +432,7 @@ public class Time {
     /**
      * This method returns the difference between the current instance and an instance passed
      * Ex. currentTime = [0,0,0,60], times = [0,0,0,59] -> currentTime [0,0,0,1]
-     *
+     * <p>
      * P.S. if the time passed is bigger than the current instance, the result will be negative
      *
      * @param time the other object to subtract
