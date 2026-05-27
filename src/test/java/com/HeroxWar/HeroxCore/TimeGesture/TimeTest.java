@@ -292,4 +292,16 @@ public class TimeTest {
         Assertions.assertEquals("1h 23m 20s", time.getTimeWithoutZerosString());
     }
 
+    @Test
+    public void testGetTimeWithoutZerosStringFormattedEmpty() {
+        time = new Time(0,' ');
+        Assertions.assertEquals("0s", time.getTimeWithoutZerosString());
+    }
+
+    @Test
+    public void testGetTimeWithoutZerosStringEmpty() {
+        time = new Time(0,':');
+        Assertions.assertEquals("0", time.getTimeWithoutZeros());
+    }
+
 }
