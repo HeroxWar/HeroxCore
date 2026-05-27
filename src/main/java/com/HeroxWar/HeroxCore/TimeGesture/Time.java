@@ -261,6 +261,9 @@ public class Time {
             found = false;
             time.append(partTime).append(formatter);
         }
+        if (time.isEmpty()) {
+            return "0";
+        }
         time = new StringBuilder(time.substring(0, time.length() - 1));
         return time.toString();
     }
@@ -280,6 +283,9 @@ public class Time {
             }
             found = false;
             time.append(partTime).append(formatter);
+        }
+        if (time.isEmpty()) {
+            return "0s";
         }
         time = new StringBuilder(time.substring(0, time.length() - 1));
         return time.toString();
