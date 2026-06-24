@@ -1,4 +1,4 @@
-package com.HeroxWar.HeroxCore.Utils;
+package com.HeroxWar.HeroxCore.MessageGesture;
 
 import com.test.utils.TestLogHandler;
 import org.bukkit.Bukkit;

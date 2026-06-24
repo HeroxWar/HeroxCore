@@ -1,4 +1,4 @@
-package com.HeroxWar.HeroxCore;
+package com.HeroxWar.HeroxCore.Gestion;
 /*******************************************************************************
  *
  *     CommentedConfiguration

@@ -1,6 +1,5 @@
 package com.HeroxWar.HeroxCore.Utils;
 
-import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,13 +13,11 @@ public class NmsTest {
 
     private ServerMock serverMock;
 
-    // Fake Instance
     Nms nms;
     PlayerMock playerMock;
 
     @BeforeEach
     public void setUp() {
-        // Inizialization server and plugin
         serverMock = MockBukkit.mock();
         playerMock = serverMock.addPlayer();
         nms = new Nms();
@@ -28,13 +25,12 @@ public class NmsTest {
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server and Plugin
         MockBukkit.unmock();
     }
 
     @Test
     public void testCreation() {
-        assertEquals("Nms{packageName='org.mockbukkit.mockbukkit', nms='.', nmsVersion=true, brigadierIsActive=false, minecraftServerClass=null}",nms.toString());
+        assertEquals("Nms{packageName='org.mockbukkit.mockbukkit', nms='.', nmsVersion=true, brigadierIsActive=false, minecraftServerClass=null}", nms.toString());
     }
 
     @Test
@@ -48,7 +44,6 @@ public class NmsTest {
     public void testSetAndGetNmsVersion() {
         nms.setNmsVersion(true);
         assertTrue(nms.isNmsVersion());
-
         nms.setNmsVersion(false);
         assertFalse(nms.isNmsVersion());
     }
@@ -57,7 +52,6 @@ public class NmsTest {
     public void testSetAndGetBrigadierIsActive() {
         nms.setBrigadierIsActive(true);
         assertTrue(nms.isBrigadierIsActive());
-
         nms.setBrigadierIsActive(false);
         assertFalse(nms.isBrigadierIsActive());
     }
@@ -84,6 +78,20 @@ public class NmsTest {
     @Test
     public void testGetNmsClass() {
         assertThrows(ClassNotFoundException.class, () -> nms.getNMSClass("org.bukkit.craftbukkit.__VERSION__.entity.CraftPlayer"));
+    }
+
+    @Test
+    public void constructorWithCraftBukkitPackageSetsNmsDot() {
+        Nms customNms = new Nms();
+        customNms.setPackageName("org.bukkit.craftbukkit");
+        assertEquals("org.bukkit.craftbukkit", customNms.getPackageName());
+    }
+
+    @Test
+    public void constructorWithSplitPackageSetsVersionedNms() {
+        Nms customNms = new Nms();
+        customNms.setPackageName("org.bukkit.craftbukkit.v1_20_R1");
+        assertEquals("org.bukkit.craftbukkit.v1_20_R1", customNms.getPackageName());
     }
 
 }

@@ -1,6 +1,5 @@
-package com.HeroxWar.HeroxCore;
+package com.HeroxWar.HeroxCore.MessageGesture;
 
-import com.HeroxWar.HeroxCore.Utils.ColoredLogger;
 import com.test.utils.PrintMessage;
 import com.test.utils.TestLogHandler;
 import net.kyori.adventure.text.Component;
@@ -184,10 +183,42 @@ public class MessageGesturePaperTest {
     public void testSendBroadcastWithNoPlayers() {
         playerMock.kick();
 
-        // Non dovrebbe lanciare eccezioni
         Assertions.assertDoesNotThrow(() -> messageGesturePaper.sendBroadcast("&6Test"));
     }
-    
+
+    @Test
+    public void testSendMessageWithAdventurePath() {
+        PluginMock plugin = MockBukkit.createMockPlugin();
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        Assertions.assertNotNull(msg.getAdventure());
+        Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!"));
+    }
+
+    @Test
+    public void testSendMessageWithAdventurePathAndPrefix() {
+        PluginMock plugin = MockBukkit.createMockPlugin();
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!", true));
+    }
+
+    @Test
+    public void testSendMessageComponentWithAdventurePath() {
+        PluginMock plugin = MockBukkit.createMockPlugin();
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        Component component = Component.text("Hello Component");
+        Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, component));
+    }
+
+    @Test
+    public void testConstructorWithPluginAndPrefix() {
+        PluginMock plugin = MockBukkit.createMockPlugin();
+        MessageGesturePaper msg = new MessageGesturePaper("&bCustomPrefix", true, true, plugin);
+        Assertions.assertEquals("&bCustomPrefix", msg.getPrefix());
+        Assertions.assertTrue(msg.isPrintDebug());
+        Assertions.assertTrue(msg.isPlaceholderAPIEnabled());
+        Assertions.assertNotNull(msg.getAdventure());
+    }
+
     // ========== Color Application Tests ==========
     
     @Test

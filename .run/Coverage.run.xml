@@ -3,7 +3,7 @@
     <module name="HeroxCore" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.HeroxWar.HeroxCore.CommentedConfiguration" />
+        <option name="PATTERN" value="com.HeroxWar.HeroxCore.Gestion.CommentedConfiguration" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>

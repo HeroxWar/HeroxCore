@@ -25,58 +25,144 @@ public class TimeTest {
         Assertions.assertEquals("0.0.0.0", time.getTime('.'));
     }
 
+    // ========== Conversion method direct tests ==========
+
+    @Test
+    public void getSecondsFromMilliseconds() {
+        Assertions.assertEquals(10, time.getSecondsFromMilliseconds(10000));
+        Assertions.assertEquals(0, time.getSecondsFromMilliseconds(0));
+        Assertions.assertEquals(0, time.getSecondsFromMilliseconds(999));
+    }
+
+    @Test
+    public void getSecondsFromMinutes() {
+        Assertions.assertEquals(120, time.getSecondsFromMinutes(2));
+        Assertions.assertEquals(0, time.getSecondsFromMinutes(0));
+    }
+
+    @Test
+    public void getMinutesFromSeconds() {
+        Assertions.assertEquals(2, time.getMinutesFromSeconds(120));
+        Assertions.assertEquals(1, time.getMinutesFromSeconds(61));
+        Assertions.assertEquals(0, time.getMinutesFromSeconds(59));
+        Assertions.assertEquals(0, time.getMinutesFromSeconds(0));
+    }
+
+    @Test
+    public void getMinutesFromHours() {
+        Assertions.assertEquals(120, time.getMinutesFromHours(2));
+        Assertions.assertEquals(0, time.getMinutesFromHours(0));
+    }
+
+    @Test
+    public void getHoursFromMinutes() {
+        Assertions.assertEquals(2, time.getHoursFromMinutes(120));
+        Assertions.assertEquals(1, time.getHoursFromMinutes(61));
+        Assertions.assertEquals(0, time.getHoursFromMinutes(59));
+        Assertions.assertEquals(0, time.getHoursFromMinutes(0));
+    }
+
+    @Test
+    public void getHoursFromDays() {
+        Assertions.assertEquals(48, time.getHoursFromDays(2));
+        Assertions.assertEquals(0, time.getHoursFromDays(0));
+    }
+
+    @Test
+    public void getDaysFromHours() {
+        Assertions.assertEquals(2, time.getDaysFromHours(48));
+        Assertions.assertEquals(1, time.getDaysFromHours(25));
+        Assertions.assertEquals(0, time.getDaysFromHours(23));
+        Assertions.assertEquals(0, time.getDaysFromHours(0));
+    }
+
+    // ========== Constructor edge cases ==========
+
     @Test
     public void createTimeMilliseconds() {
-        // Preconditions
         time = new Time(10000L, '.');
-
-        // Test
         Assertions.assertEquals("0.0.0.10", time.getTime());
+    }
+
+    @Test
+    public void createTimeMillisecondsZero() {
+        time = new Time(0L, '.');
+        Assertions.assertEquals("0.0.0.0", time.getTime());
+    }
+
+    @Test
+    public void createTimeMillisecondsSubSecond() {
+        time = new Time(999L, '.');
+        Assertions.assertEquals("0.0.0.0", time.getTime());
+    }
+
+    @Test
+    public void createTimeMillisecondsProducesDays() {
+        time = new Time(90061000L, '.');
+        Assertions.assertEquals("1.1.1.1", time.getTime());
     }
 
     @Test
     public void createTimeTicks() {
         time = new Time(2420,'.');
-
-        // Test
         Assertions.assertEquals("0.0.2.1", time.getTime());
     }
 
     @Test
-    public void createTimeLongs() {
-        // Preconditions
-        time = new Time(60L, 23L, 59L, 59L, '.');
+    public void createTimeTicksZero() {
+        time = new Time(0,'.');
+        Assertions.assertEquals("0.0.0.0", time.getTime());
+    }
 
-        // Test
+    @Test
+    public void createTimeTicksSubSecond() {
+        time = new Time(19,'.');
+        Assertions.assertEquals("0.0.0.0", time.getTime());
+    }
+
+    @Test
+    public void createTimeLongs() {
+        time = new Time(60L, 23L, 59L, 59L, '.');
         Assertions.assertEquals("60.23.59.59", time.getTime());
     }
 
     @Test
     public void createTimeLongsWrong() {
-        // Preconditions
         time = new Time(60L, 60L, 60L, 60L, '.');
-
-        // Test
         Assertions.assertEquals("60.23.59.59", time.getTime());
     }
 
     @Test
     public void createTimeInts() {
-        // Preconditions
         time = new Time(60, 23, 59, 59, '.');
-
-        // Test
         Assertions.assertEquals("60.23.59.59", time.getTime());
     }
 
     @Test
     public void createTimeIntsWrong() {
-        // Preconditions
         time = new Time(60, 60, 60, 60, '.');
-
-        // Test
         Assertions.assertEquals("60.23.59.59", time.getTime());
     }
+
+    @Test
+    public void createTimeLongsClampSecondsOnly() {
+        time = new Time(0L, 0L, 0L, 60L, '.');
+        Assertions.assertEquals("0.0.0.59", time.getTime());
+    }
+
+    @Test
+    public void createTimeLongsClampMinutesOnly() {
+        time = new Time(0L, 0L, 60L, 0L, '.');
+        Assertions.assertEquals("0.0.59.0", time.getTime());
+    }
+
+    @Test
+    public void createTimeLongsClampHoursOnly() {
+        time = new Time(0L, 24L, 0L, 0L, '.');
+        Assertions.assertEquals("0.23.0.0", time.getTime());
+    }
+
+    // ========== Getter/setter ==========
 
     @Test
     public void getAndSetSeconds() {
@@ -102,36 +188,47 @@ public class TimeTest {
         Assertions.assertEquals(1, time.getDays());
     }
 
+    // ========== Business methods ==========
+
     @Test
     public void getMilliseconds() {
-        // Precondition
         time = new Time(1, 1, 1, 1, '.');
-
-        // Test
         Assertions.assertEquals(90061000L, time.getMilliseconds());
     }
 
     @Test
-    public void getTimeWithoutZeros() {
-        // Precondition
-        time = new Time(0, 23, 0, 10, '.');
+    public void getMillisecondsZero() {
+        time = new Time(0, 0, 0, 0, '.');
+        Assertions.assertEquals(0L, time.getMilliseconds());
+    }
 
-        // Tests
+    @Test
+    public void getMillisecondsOnlyDays() {
+        time = new Time(2, 0, 0, 0, '.');
+        Assertions.assertEquals(172800000L, time.getMilliseconds());
+    }
+
+    @Test
+    public void getTimeWithoutZeros() {
+        time = new Time(0, 23, 0, 10, '.');
         Assertions.assertEquals("23.0.10", time.getTimeWithoutZeros());
         Assertions.assertEquals("23-0-10", time.getTimeWithoutZeros('-'));
     }
 
     @Test
+    public void getTimeWithoutZerosAllZeros() {
+        time = new Time(0, 0, 0, 0, '.');
+        Assertions.assertEquals("0", time.getTimeWithoutZeros());
+    }
+
+    @Test
     public void getTimeArray() {
-        // Precondition
         time = new Time(0, 23, 10, 0, '.');
         List<Long> expected = new ArrayList<>();
         expected.add(0L);
         expected.add(23L);
         expected.add(10L);
         expected.add(0L);
-
-        // Tests
         Assertions.assertEquals(expected, time.getArrayTime());
         expected.remove(0);
         Assertions.assertEquals(expected, time.getArrayTimeWithoutZero());
@@ -139,63 +236,41 @@ public class TimeTest {
 
     @Test
     public void cloneTime() {
-        // Precondition
         time = new Time(1000L, '.');
         Time clone = time.cloneTime();
-
-        // Test
         Assertions.assertEquals(time, clone);
     }
 
     @Test
     public void equals() {
-        // Precondition
         Time clone = time.cloneTime();
-
-        // Test
-        boolean equals = time.equals(clone);
-        Assertions.assertTrue(equals);
+        Assertions.assertEquals(time, clone);
     }
 
     @Test
     public void notEquals() {
-        // Precondition
         Time newTime = new Time(1000L, '.');
-
-        // Test
-        boolean equals = time.equals(newTime);
-        Assertions.assertFalse(equals);
+        Assertions.assertNotEquals(time, newTime);
     }
 
     @Test
     public void notEqualsInstances() {
-        // Test
-        boolean equals = time.equals(new Object());
-        Assertions.assertFalse(equals);
+        Assertions.assertNotEquals(time, new Object());
     }
 
     @Test
     public void isBiggerThen() {
-        // Precondition
         Time newTime = new Time(1000L, '.');
-
-        // Tests
-        boolean isBigger = time.isBiggerThen(newTime);
-        Assertions.assertTrue(isBigger);
-        isBigger = newTime.isBiggerThen(time);
-        Assertions.assertFalse(isBigger);
+        Assertions.assertTrue(time.isBiggerThen(newTime));
+        Assertions.assertFalse(newTime.isBiggerThen(time));
     }
 
     @Test
     public void difference() {
-        // Precondition
         Time newTime = new Time(1000L, '.');
         time = new Time(10000L, '.');
-
-        // Tests
         newTime.difference(time);
         Assertions.assertEquals(new Time(9000L, '.'), newTime);
-
         newTime = new Time(1000L, '.');
         time.difference(newTime);
         Assertions.assertEquals(new Time(9000L, '.'), time);
@@ -203,34 +278,32 @@ public class TimeTest {
 
     @Test
     public void differenceBetween() {
-        // Precondition
         Time newTime = new Time(1000L, '.');
         time = new Time(10000L, '.');
-
-        // Tests
         Time expected = new Time(9000L, '.');
         Assertions.assertEquals(expected, newTime.differenceBetween(time));
         Assertions.assertEquals(expected, time.differenceBetween(newTime));
     }
 
     @Test
+    public void differenceBetweenAllowNegativeDirect() {
+        time = new Time(1000L, '.');
+        Time result = time.differenceBetweenAllowNegative(new Time(10000L, '.'));
+        Assertions.assertTrue(result.getMilliseconds() < 0);
+    }
+
+    @Test
     public void sumBetween() {
-        // Precondition
         Time newTime = new Time(5000L, '.');
         time = new Time(5000L, '.');
-
-        // Test
         Time expected = new Time(10000L, '.');
         Assertions.assertEquals(expected, newTime.sumBetween(time));
     }
 
     @Test
     public void sum() {
-        // Precondition
         Time newTime = new Time(5000L, '.');
         time = new Time(5000L, '.');
-
-        // Test
         Time expected = new Time(10000L, '.');
         newTime.sum(time);
         Assertions.assertEquals(expected, newTime);
@@ -238,7 +311,6 @@ public class TimeTest {
 
     @Test
     public void toStringTime() {
-        // Test
         String expected = "Time{seconds=0, minutes=0, hours=0, days=0, formatter=':'}";
         Assertions.assertEquals(expected, time.toString());
     }
@@ -252,15 +324,13 @@ public class TimeTest {
     @Test
     public void testGetTimeFormatted() {
         time = new Time(20, ':');
-        String timeForm = time.getTimeFormatted();
-        Assertions.assertEquals("0d:0h:0m:1s", timeForm);
+        Assertions.assertEquals("0d:0h:0m:1s", time.getTimeFormatted());
     }
 
     @Test
     public void testGetTimeFormattedFormatter() {
         time = new Time(20, ':');
-        String timeForm = time.getTimeFormatted(" ");
-        Assertions.assertEquals("0d 0h 0m 1s", timeForm);
+        Assertions.assertEquals("0d 0h 0m 1s", time.getTimeFormatted(" "));
     }
 
     @Test

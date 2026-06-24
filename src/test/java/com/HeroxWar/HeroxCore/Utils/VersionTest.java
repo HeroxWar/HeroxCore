@@ -13,22 +13,16 @@ public class VersionTest {
 
     private ServerMock serverMock;
 
-    //Fake Instances
     Version version;
 
     @BeforeEach
     public void setUp() {
-        // Inizialization server and plugin
         serverMock = MockBukkit.mock();
         version = new Version();
-        System.out.println(version.getFormattedServerVersion());
-        System.out.println(Arrays.toString(version.getSplitFormattedServerVersion()));
-        System.out.println(version.getServerVersion());
     }
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server and Plugin
         MockBukkit.unmock();
     }
 
@@ -73,6 +67,25 @@ public class VersionTest {
         version.setServerVersion("MockBukkit (MC: 26.1.1)");
         Assertions.assertTrue(version.isInRange(21, 26));
         Assertions.assertFalse(version.isInRange(21, 25));
+    }
+
+    @Test
+    public void isEqualsWithMinorVersionPartInModernVersion() {
+        version.setServerVersion("MockBukkit (MC: 26.1)");
+        Assertions.assertTrue(version.isEquals(26));
+        Assertions.assertFalse(version.isEquals(1));
+    }
+
+    @Test
+    public void decodeServerVersionWithoutTrailingParenthesis() {
+        version.setServerVersion("MockBukkit (MC: 1.21");
+        Assertions.assertNotNull(version.getFormattedServerVersion());
+    }
+
+    @Test
+    public void decodeServerVersionNewFormat() {
+        version.setServerVersion("MockBukkit (MC: 26)");
+        Assertions.assertEquals("26", version.getFormattedServerVersion());
     }
 
 }

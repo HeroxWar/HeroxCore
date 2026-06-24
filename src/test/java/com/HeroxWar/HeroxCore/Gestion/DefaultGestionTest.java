@@ -22,16 +22,13 @@ public class DefaultGestionTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialization server
         serverMock = MockBukkit.mock();
-
         gestion = new DefaultGestion(resourcesPathTest.toString(), "config.yml");
         Assertions.assertEquals("config.yml", gestion.getConfigFile().getName());
     }
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server
         MockBukkit.unmock();
     }
 
@@ -64,7 +61,6 @@ public class DefaultGestionTest {
         gestion.defaultInformations();
 
         Map<String, String> messages = gestion.getMessages();
-        System.out.println(messages);
         Assertions.assertEquals("&a&lPrefix", messages.get("Prefix"));
         Assertions.assertEquals("&a&lBuy", messages.get("Success.Buy"));
         Assertions.assertEquals("&a&lAccept", messages.get("Success.Accept"));
@@ -78,7 +74,6 @@ public class DefaultGestionTest {
         Assertions.assertEquals("Accept", messages.get("Success.Accept"));
 
         Map<String, Boolean> debug = gestion.getDebug();
-        System.out.println(debug);
         Assertions.assertTrue(debug.get("Enabled"));
         Assertions.assertFalse(debug.get("Disabled"));
         debug.replace("Enabled", false);
@@ -89,7 +84,6 @@ public class DefaultGestionTest {
         Assertions.assertTrue(debug.get("Disabled"));
 
         Map<String,Boolean> hooks = gestion.getHooks();
-        System.out.println(hooks);
         Assertions.assertTrue(hooks.get("PlaceholderAPI"));
         Assertions.assertFalse(hooks.get("WorldGuard"));
         Assertions.assertFalse(hooks.get("Lands"));
@@ -130,6 +124,22 @@ public class DefaultGestionTest {
         gestion.setFc(gestion.getFc());
         gestion.reloadDefaultConfiguration(true);
         Assertions.assertThrows(NullPointerException.class, () -> gestion = gestion.reloadDefaultConfiguration(false));
+    }
+
+    @Test
+    public void setDebugWithEmptyMap() {
+        gestion.setDebug(Map.of());
+    }
+
+    @Test
+    public void setMessagesWithEmptyMap() {
+        gestion.setMessages(Map.of());
+    }
+
+    @Test
+    public void setHooksBeforeDefaultInformations() {
+        DefaultGestion g = new DefaultGestion(resourcesPathTest.toString(), "config.yml");
+        g.setHooks(Map.of("TestHook", true));
     }
 
 }
