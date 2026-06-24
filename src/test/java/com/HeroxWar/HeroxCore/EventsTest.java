@@ -6,9 +6,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.plugin.PluginMock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +19,11 @@ public class EventsTest {
 
     @BeforeEach
     public void setUp() {
-        // Inizialization server
         serverMock = MockBukkit.mock();
     }
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server
         MockBukkit.unmock();
     }
 
@@ -47,6 +45,20 @@ public class EventsTest {
         ClassGraph classGraph = events.initializeScan();
         ClassInfoList classInfos = events.getListEvents(classGraph.scan());
         events.discoveredEvents(classInfos);
+    }
+
+    @Test
+    public void testEventsIsListener() {
+        Events events = new Events();
+        Assertions.assertInstanceOf(org.bukkit.event.Listener.class, events);
+    }
+
+    @Test
+    public void testInitializeScansBukkitEvents() {
+        Events events = new Events();
+        ClassGraph classGraph = events.initializeScan();
+        ClassInfoList classInfos = events.getListEvents(classGraph.scan());
+        Assertions.assertFalse(classInfos.isEmpty());
     }
 
 }

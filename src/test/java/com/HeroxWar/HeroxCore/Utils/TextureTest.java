@@ -1,13 +1,11 @@
 package com.HeroxWar.HeroxCore.Utils;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.block.BlockMock;
@@ -19,7 +17,6 @@ public class TextureTest {
 
     private ServerMock serverMock;
 
-    // Fake Instances
     PlayerMock elio;
     PlayerMock sav;
     WorldMock worldMock;
@@ -27,7 +24,6 @@ public class TextureTest {
 
     @BeforeEach
     public void setUp() {
-        // Inizialization server and plugin
         serverMock = MockBukkit.mock();
         worldMock = serverMock.addSimpleWorld("world");
         skullBlock = worldMock.createBlock(new Coordinate(100, 100, 100));
@@ -37,7 +33,6 @@ public class TextureTest {
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server and Plugin
         MockBukkit.unmock();
     }
 
@@ -46,6 +41,12 @@ public class TextureTest {
         String texture = Texture.getPlayerTexture(elio);
         Assertions.assertEquals("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Im51bGwifX19", texture);
         Assertions.assertThrows(TextureException.class, () -> Texture.getPlayerTexture(sav, "a"));
+    }
+
+    @Test
+    public void getPlayerTextureReturnsDefaultOnError() {
+        String texture = Texture.getPlayerTexture(elio);
+        Assertions.assertNotNull(texture);
     }
 
     @Test
@@ -58,6 +59,16 @@ public class TextureTest {
                 "CAiQ0FQRSIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM0MGMwZTAzZGQy" +
                 "NGExMWIxNWE4YjMzYzJhN2U5ZTMyYWJiMjA1MWIyNDgxZDBiYTdkZWZkNjM1Y2E3YTkzMyIKICAgIH0KICB9Cn0=");
         Assertions.assertEquals("http://textures.minecraft.net/texture/dae5ce0d3a6770e11d3516539d83bdca7fd12c5f73027808fa4a3b42a9f22885", url);
+    }
+
+    @Test
+    public void base64ToUrlNullReturnsEmpty() {
+        Assertions.assertEquals("", Texture.convertBase64ToURL(null));
+    }
+
+    @Test
+    public void base64ToUrlEmptyReturnsEmpty() {
+        Assertions.assertEquals("", Texture.convertBase64ToURL(""));
     }
 
     @Test
@@ -95,4 +106,10 @@ public class TextureTest {
         Texture.setCustomTexture(skullBlock, "eliotesta98");
         Assertions.assertEquals("PLAYER_HEAD", skullBlock.getType().toString());
     }
+
+    @Test
+    public void getPlayerTextureWithDefaultCustom() {
+        Assertions.assertThrows(TextureException.class, () -> Texture.getPlayerTexture(sav, "invalid"));
+    }
+
 }

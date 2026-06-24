@@ -1,6 +1,5 @@
-package com.HeroxWar.HeroxCore;
+package com.HeroxWar.HeroxCore.MessageGesture;
 
-import com.HeroxWar.HeroxCore.Utils.ColoredLogger;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

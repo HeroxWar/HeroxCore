@@ -1,4 +1,4 @@
-package com.HeroxWar.HeroxCore.Utils;
+package com.HeroxWar.HeroxCore.MessageGesture;
 
 import org.bukkit.Bukkit;
 import org.fusesource.jansi.AnsiConsole;

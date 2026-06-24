@@ -1,6 +1,6 @@
 package com.HeroxWar.HeroxCore.Utils;
 
-import com.HeroxWar.HeroxCore.MessageGesturePaper;
+import com.HeroxWar.HeroxCore.MessageGesture.MessageGesturePaper;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

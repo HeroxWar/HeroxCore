@@ -34,10 +34,10 @@ public class Version {
      * @return boolean
      */
     public boolean isEquals(int versionPart) {
-        if(splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
+        if (splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
             return serverVersion.matches(".*\\b1\\.(" + versionPart + ")\\b.*");
         } else {
-            return serverVersion.matches(".*\\b(" + versionPart + ")\\b.*");
+            return Integer.parseInt(splitFormattedServerVersion[0]) == versionPart;
         }
     }
 

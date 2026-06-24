@@ -1,5 +1,6 @@
 package com.HeroxWar.HeroxCore.SoundGesture;
 
+import com.test.utils.TestLogHandler;
 import org.bukkit.Location;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -9,24 +10,33 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 public class SoundTypeTest {
+
+    private static final Logger SOUND_LOGGER = Logger.getLogger(SoundType.class.getName());
 
     private static ServerMock serverMock;
 
-    // Fake Instances
     private PlayerMock playerMock;
     private SoundType soundType = new SoundType("AMBIENT_CAVE", 0, 2);
+    private TestLogHandler logHandler;
+    private List<String> logMessages;
 
     @BeforeEach
     public void setUp() {
-        // Inizialization server
         serverMock = MockBukkit.mock();
         playerMock = serverMock.addPlayer();
+        logMessages = new ArrayList<>();
+        logHandler = new TestLogHandler(logMessages);
+        SOUND_LOGGER.addHandler(logHandler);
     }
 
     @AfterEach
     public void tearDown() {
-        // Unmock Server
+        SOUND_LOGGER.removeHandler(logHandler);
         MockBukkit.unmock();
     }
 
@@ -55,58 +65,92 @@ public class SoundTypeTest {
     }
 
     @Test
+    public void createSoundInvalidLogsWarning() {
+        logMessages.clear();
+        soundType = new SoundType("AMBIENT_CAV", 0, 2);
+        Assertions.assertFalse(logMessages.isEmpty());
+        boolean containsSound = false;
+        for (String msg : logMessages) {
+            if (msg != null && msg.contains("AMBIENT_CAV")) {
+                containsSound = true;
+                break;
+            }
+        }
+        Assertions.assertTrue(containsSound);
+    }
+
+    @Test
     public void createSoundErrorVolumeMin() {
         soundType = new SoundType("AMBIENT_CAVE", -1, 2);
-        Assertions.assertEquals(soundType.getVolume(), 100);
+        Assertions.assertEquals(100f, soundType.getVolume());
     }
 
     @Test
     public void createSoundErrorVolumeMax() {
         soundType = new SoundType("AMBIENT_CAVE", 101, 2);
-        Assertions.assertEquals(soundType.getVolume(), 100);
+        Assertions.assertEquals(100f, soundType.getVolume());
+    }
+
+    @Test
+    public void createSoundVolumeOutOfRangeLogsWarning() {
+        logMessages.clear();
+        soundType = new SoundType("AMBIENT_CAVE", -1, 2);
+        Assertions.assertFalse(logMessages.isEmpty());
+        boolean containsVolume = false;
+        for (String msg : logMessages) {
+            if (msg != null && msg.contains("volume")) {
+                containsVolume = true;
+                break;
+            }
+        }
+        Assertions.assertTrue(containsVolume);
     }
 
     @Test
     public void createSoundErrorPitchMin() {
         soundType = new SoundType("AMBIENT_CAVE", 0, -0.1);
-        Assertions.assertEquals(soundType.getPitch(), 1);
+        Assertions.assertEquals(1f, soundType.getPitch());
     }
 
     @Test
     public void createSoundErrorPitchMax() {
         soundType = new SoundType("AMBIENT_CAVE", 0, 2.1);
-        Assertions.assertEquals(soundType.getPitch(), 1);
+        Assertions.assertEquals(1f, soundType.getPitch());
+    }
+
+    @Test
+    public void createSoundPitchOutOfRangeLogsWarning() {
+        logMessages.clear();
+        soundType = new SoundType("AMBIENT_CAVE", 0, -0.1);
+        Assertions.assertFalse(logMessages.isEmpty());
+        boolean containsPitch = false;
+        for (String msg : logMessages) {
+            if (msg != null && msg.contains("pitch")) {
+                containsPitch = true;
+                break;
+            }
+        }
+        Assertions.assertTrue(containsPitch);
     }
 
     @Test
     public void playSoundPlayer() {
-        // Preconditions
         soundType = new SoundType("AMBIENT_CAVE", 0, 2);
         Assertions.assertTrue(soundType.isEnabled());
-
-        // Tests
         soundType.playSound(playerMock);
     }
 
     @Test
-    // Enabled = true && location != null
     public void playSoundLocation() {
-        // Preconditions
         soundType = new SoundType("AMBIENT_CAVE", 0, 2);
         Assertions.assertTrue(soundType.isEnabled());
-
-        // Tests
         soundType.playSound(playerMock.getLocation());
     }
 
     @Test
-    // Enabled = true && location == null
     public void playSoundErrorLocation() {
-        // Preconditions
         soundType = new SoundType("AMBIENT_CAVE", 0, 2);
         Assertions.assertTrue(soundType.isEnabled());
-
-        // Tests
         Location location = playerMock.getLocation().clone();
         location.setWorld(null);
         soundType.playSound(location);
@@ -114,22 +158,15 @@ public class SoundTypeTest {
 
     @Test
     public void playSoundPlayerButIsNotEnabled() {
-        // Preconditions
         soundType = new SoundType(null, 0, 2);
         Assertions.assertFalse(soundType.isEnabled());
-
-        // Tests
         soundType.playSound(playerMock);
     }
 
     @Test
-    // Enabled = false && location != null
     public void playSoundLocationButIsNotEnabled() {
-        // Preconditions
         soundType = new SoundType(null, 0, 2);
         Assertions.assertFalse(soundType.isEnabled());
-
-        // Tests
         soundType.playSound(playerMock.getLocation());
     }
 
