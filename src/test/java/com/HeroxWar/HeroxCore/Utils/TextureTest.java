@@ -74,7 +74,7 @@ public class TextureTest {
     @Test
     public void setTextureToItem() throws TextureException {
         ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-        Assertions.assertFalse(itemStack.toString().contains("player-profile=CraftPlayerProfile [uniqueId="));
+        Assertions.assertFalse(itemStack.toString().contains("player-profile={uniqueId="));
         itemStack = Texture.setCustomTexture(itemStack, "ewogICJ0aW1lc3RhbXAiIDogMTcwNTc3NDI4MzE1NSwKICAicHJvZmlsZUlkIiA6ICJlMWM1MTZ" +
                 "kYmJiZTI0ZGE3OTEwOTllN2Y0YTUxYTkzOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlbGlvdGVzdGE5OCIsCiAgInNpZ25hdHVyZVJlc" +
                 "XVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmV" +
@@ -82,7 +82,7 @@ public class TextureTest {
                 "I0MmE5ZjIyODg1IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0sCiAgI" +
                 "CAiQ0FQRSIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM0MGMwZTAzZGQy" +
                 "NGExMWIxNWE4YjMzYzJhN2U5ZTMyYWJiMjA1MWIyNDgxZDBiYTdkZWZkNjM1Y2E3YTkzMyIKICAgIH0KICB9Cn0=");
-        Assertions.assertTrue(itemStack.toString().contains("player-profile=CraftPlayerProfile [uniqueId="));
+        Assertions.assertTrue(itemStack.toString().contains("player-profile={uniqueId="));
     }
 
     @Test

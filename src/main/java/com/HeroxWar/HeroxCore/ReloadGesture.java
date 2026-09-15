@@ -118,7 +118,7 @@ public class ReloadGesture {
                 logger.log(Level.WARNING, e.getMessage());
             }
 
-            if(target != null) {
+            if (target != null) {
                 target.onLoad();
                 Bukkit.getPluginManager().enablePlugin(target);
             }
@@ -144,7 +144,7 @@ public class ReloadGesture {
         }
 
         Map<String, Command> knownCommands = getKnownCommands();
-        if(knownCommands == null) {
+        if (knownCommands == null) {
             return new ArrayList<>();
         }
         return knownCommands.entrySet().stream()
@@ -175,8 +175,17 @@ public class ReloadGesture {
     }
 
     public static void reload(String pluginName) {
-        unload(pluginName);
-        load(pluginName);
+        reload(pluginName, false, null);
+    }
+
+    public static void reload(String pluginName, boolean soft, MainCommons mainCommons) {
+        if (soft) {
+            mainCommons.unload();
+            mainCommons.loadConfigs();
+        } else {
+            unload(pluginName);
+            load(pluginName);
+        }
     }
 
     public static void unload(String plName) {
@@ -184,7 +193,7 @@ public class ReloadGesture {
         List<Plugin> pluginList = null;
         boolean reloadlisteners = true;
         Plugin plugin = Bukkit.getPluginManager().getPlugin(plName);
-        if(plugin == null) {
+        if (plugin == null) {
             return;
         }
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -527,7 +536,7 @@ public class ReloadGesture {
     }
 
     public static void wrap(Command command, String alias) {
-        if(!nms.isBrigadierIsActive()) {
+        if (!nms.isBrigadierIsActive()) {
             return;
         }
 
@@ -615,7 +624,7 @@ public class ReloadGesture {
     }
 
     public static void unwrap(String command) {
-        if(!nms.isBrigadierIsActive()) {
+        if (!nms.isBrigadierIsActive()) {
             return;
         }
 
