@@ -44,13 +44,13 @@ public class VersionTest {
 
     @Test
     public void testMatch() {
-        Assertions.assertTrue(version.isEquals(21));
+        Assertions.assertTrue(version.isEquals(26));
         Assertions.assertFalse(version.isEquals(20));
     }
 
     @Test
     public void testMatchRange() {
-        Assertions.assertTrue(version.isInRange(18, 21));
+        Assertions.assertTrue(version.isInRange(18, 26));
         Assertions.assertFalse(version.isInRange(18, 20));
     }
 

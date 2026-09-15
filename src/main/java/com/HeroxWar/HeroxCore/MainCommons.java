@@ -11,7 +11,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainCommons {
+public abstract class MainCommons extends  JavaPlugin {
 
     private boolean mockTest = false;
     private List<String> libraryLegacyMessages = new ArrayList<>();
@@ -54,6 +54,10 @@ public class MainCommons {
     public void onDisableInit(JavaPlugin javaPlugin) {
         messageGesturePaper.sendMessage("&a" + javaPlugin.getName() + " has been disabled, &cBye bye! &e:(");
     }
+
+    public abstract void loadConfigs();
+
+    public abstract void unload();
 
     private List<String> loadLibraries(JavaPlugin javaPlugin) {
         final List<Library> libraries = new ArrayList<>();

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,15 +29,18 @@ public class MessageGesturePaper {
     private boolean isPlaceholderAPIEnabled;
     private ColoredLogger internalLogger;
     private BukkitAudiences adventure = null;
+    private boolean paper = false;
+    private JavaPlugin plugin;
 
     public MessageGesturePaper(boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         // Initialize an audiences instance for the plugin
-        if (plugin != null) {
-            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + plugin.getName() + " &4DEBUG &8>&7>\n\n";
-            this.internalLogger = new ColoredLogger("[" + plugin.getName() + "] ");
-            this.adventure = BukkitAudiences.create(plugin);
+        this.plugin = plugin;
+        if (this.plugin != null) {
+            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + this.plugin.getName() + " &4DEBUG &8>&7>\n\n";
+            this.internalLogger = new ColoredLogger("[" + this.plugin.getName() + "] ");
+            existBukkitAudiences();
         } else {
             this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &eHeroxPlugin &4DEBUG &8>&7>\n\n";
             this.internalLogger = new ColoredLogger("[HeroxPlugin] ");
@@ -49,9 +53,36 @@ public class MessageGesturePaper {
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         internalLogger = new ColoredLogger("[" + prefix + "] ");
+        this.plugin = plugin;
         // Initialize an audiences instance for the plugin
-        if (plugin != null) {
+        if (this.plugin != null) {
+            existBukkitAudiences();
+        }
+    }
+
+    /**
+     * Check if the server has BukkitAudiences
+     * If not set the plugin instance to null for correct error messages
+     */
+    public void existBukkitAudiences() {
+        try {
+            Class<?> aClass = Class.forName("net.kyori.adventure.platform.bukkit.BukkitAudiences");
             this.adventure = BukkitAudiences.create(plugin);
+        } catch (ClassNotFoundException ignored) {
+            System.out.println("[HeroxCore] BukkitAudiences not found check for PaperRichMessage");
+            existPaperRichMessage();
+        }
+    }
+
+    public void existPaperRichMessage() {
+        try {
+            Class<?> aClass = Class.forName("org.bukkit.entity.Player");
+            aClass.getMethod("sendRichMessage", Player.class, String.class);
+            paper = true;
+        } catch (Exception ignored) {
+            System.out.println("[HeroxCore] PaperRichMessage not found using sendMessage");
+            this.plugin = null;
+            paper = false;
         }
     }
 
@@ -168,6 +199,15 @@ public class MessageGesturePaper {
         if (adventure != null) {
             Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
             sendMessage(player, componentMessage);
+        } else if (paper) {
+            try {
+                Class<?> aClass = Class.forName("org.bukkit.entity.Player");
+                java.lang.reflect.Method sendRichMessage = aClass.getMethod("sendRichMessage", Player.class, String.class);
+                sendRichMessage.invoke(null, player, applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+            } catch (Exception e) {
+                log(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()), Level.SEVERE);
+                player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+            }
         } else {
             player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
         }
