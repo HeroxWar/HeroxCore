@@ -1,5 +1,5 @@
 jdk:
-  - openjdk22
+  - openjdk25
 
 before_install:
   - export MAVEN_BASE=https://downloads.apache.org/maven/maven-3
@@ -8,8 +8,8 @@ before_install:
   - tar -xvzf apache-maven-$MAVEN_VERSION-bin.tar.gz
   - export M2_HOME=$PWD/apache-maven-$MAVEN_VERSION
   - export PATH=$M2_HOME/bin:$PATH
-  - sdk install java 22-open
-  - sdk use java 22-open
+  - sdk install java 25-open
+  - sdk use java 25-open
 
 install:
   - mvn -version  # Confirm latest Maven is used
