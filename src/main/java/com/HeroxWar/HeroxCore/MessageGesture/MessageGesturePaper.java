@@ -33,6 +33,7 @@ public class MessageGesturePaper {
     private JavaPlugin plugin;
 
     public MessageGesturePaper(boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
+        System.out.println("[HeroxCore] MessageGesturePaper Initializing");
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
         // Initialize an audiences instance for the plugin
@@ -48,6 +49,7 @@ public class MessageGesturePaper {
     }
 
     public MessageGesturePaper(String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
+        System.out.println("[HeroxCore] MessageGesturePaper Initializing With Prefix");
         this.prefix = prefix;
         this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + prefix + " &4DEBUG &8>&7>\n\n";
         this.printDebug = printDebug;
@@ -65,9 +67,11 @@ public class MessageGesturePaper {
      * If not set the plugin instance to null for correct error messages
      */
     public void existBukkitAudiences() {
+        System.out.println("Sto cercando BukkitAudiences");
         try {
             Class<?> aClass = Class.forName("net.kyori.adventure.platform.bukkit.BukkitAudiences");
             this.adventure = BukkitAudiences.create(plugin);
+            System.out.println("Ho trovato BukkitAudiences");
         } catch (ClassNotFoundException ignored) {
             System.out.println("[HeroxCore] BukkitAudiences not found check for PaperRichMessage");
             existPaperRichMessage();
@@ -75,9 +79,11 @@ public class MessageGesturePaper {
     }
 
     public void existPaperRichMessage() {
+        System.out.println("Sto cercando richMessage");
         try {
             Class<?> aClass = Class.forName("org.bukkit.entity.Player");
             aClass.getMethod("sendRichMessage", Player.class, String.class);
+            System.out.println("Ho trovato richMessage");
             paper = true;
         } catch (Exception ignored) {
             System.out.println("[HeroxCore] PaperRichMessage not found using sendMessage");
