@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+
+  release:
+    types: [published]
+
+jobs:
+  release:
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run release action
+        run: |
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Commit: ${{ github.sha }}"
+
+          # Legge automaticamente la versione dal pom.xml
+          VERSION=$(mvn help:evaluate \
+            -Dexpression=project.version \
+            -q \
+            -DforceStdout)
+
+          echo "Version: $VERSION"
+
+          # Crea la GitHub Release
+          gh release create "$VERSION" \
+            --title "Release $VERSION" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
