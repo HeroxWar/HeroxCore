@@ -69,9 +69,34 @@ public class MessageGesturePaper {
     public void existBukkitAudiences() {
         System.out.println("Sto cercando BukkitAudiences");
         try {
-            Class<?> aClass = Class.forName("net.kyori.adventure.platform.bukkit.BukkitAudiences");
+            Class<?> aClass = Class.forName(
+                "net.kyori.adventure.platform.bukkit.BukkitAudiences"
+            );
+
+            System.out.println("Found BukkitAudiences");
+
+            System.out.println("Class       : " + aClass.getName());
+            System.out.println("ClassLoader : " + aClass.getClassLoader());
+
+            ProtectionDomain pd = aClass.getProtectionDomain();
+            CodeSource cs = pd.getCodeSource();
+
+            if (cs != null) {
+                System.out.println("Loaded from : " + cs.getLocation());
+            }
+
+            // ClassLoader hierarchy
+            ClassLoader cl = aClass.getClassLoader();
+
+            while (cl != null) {
+                System.out.println(
+                    "Loader      : " +
+                    cl.getClass().getName() +
+                    " -> " + cl
+                );
+                cl = cl.getParent();
+            }
             this.adventure = BukkitAudiences.create(plugin);
-            System.out.println("Ho trovato BukkitAudiences");
         } catch (ClassNotFoundException ignored) {
             System.out.println("[HeroxCore] BukkitAudiences not found check for PaperRichMessage");
             existPaperRichMessage();
