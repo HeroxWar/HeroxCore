@@ -32,7 +32,7 @@ public abstract class MainCommons extends  JavaPlugin {
             new Metrics(javaPlugin, bStatsId);
         }
 
-        messageGesturePaper = new MessageGesturePaper(true, false, javaPlugin);
+        messageGesturePaper = new MessageGesturePaper(true, false, javaPlugin, version);
 
         for (String message : libraryLegacyMessages) {
             messageGesturePaper.sendMessage(message);

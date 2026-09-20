@@ -2,6 +2,8 @@ package com.HeroxWar.HeroxCore.Utils;
 
 import org.bukkit.Bukkit;
 
+import java.util.Arrays;
+
 public class Version {
 
     private String serverVersion;
@@ -63,6 +65,27 @@ public class Version {
         return false;
     }
 
+    public boolean isHigher(int version) {
+        if (splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
+            return version > Integer.parseInt(splitFormattedServerVersion[1]);
+        } else {
+            return version > Integer.parseInt(splitFormattedServerVersion[0]);
+        }
+    }
+
+    public boolean isHigher(int version, int subversion) {
+        boolean higher = isHigher(version);
+        if(higher) {
+            return true;
+        } else {
+            if (splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
+                return subversion > Integer.parseInt(splitFormattedServerVersion[2]);
+            } else {
+                return subversion > Integer.parseInt(splitFormattedServerVersion[1]);
+            }
+        }
+    }
+
     public String getServerVersion() {
         return serverVersion;
     }
@@ -86,5 +109,14 @@ public class Version {
 
     public void setSplitFormattedServerVersion(String[] splitFormattedServerVersion) {
         this.splitFormattedServerVersion = splitFormattedServerVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "Version{" +
+                "serverVersion='" + serverVersion + '\'' +
+                ", formattedServerVersion='" + formattedServerVersion + '\'' +
+                ", splitFormattedServerVersion=" + Arrays.toString(splitFormattedServerVersion) +
+                '}';
     }
 }

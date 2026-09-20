@@ -1,5 +1,6 @@
 package com.HeroxWar.HeroxCore.MessageGesture;
 
+import com.HeroxWar.HeroxCore.Utils.Version;
 import com.test.utils.PrintMessage;
 import com.test.utils.TestLogHandler;
 import net.kyori.adventure.text.Component;
@@ -38,7 +39,7 @@ public class MessageGesturePaperTest {
         serverMock = MockBukkit.mock();
         playerMock = serverMock.addPlayer();
         printMessage = new PrintMessage(serverMock);
-        messageGesturePaper = new MessageGesturePaper("&c&lHeroxCore&r", false, false, null);
+        messageGesturePaper = new MessageGesturePaper("&c&lHeroxCore&r", false, false, null, new Version());
         
         // Setup console message capture
         consoleMessages = new ArrayList<>();
@@ -68,7 +69,7 @@ public class MessageGesturePaperTest {
     @Test
     public void testConstructorWithPlugin() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper(true, false, plugin);
+        MessageGesturePaper msg = new MessageGesturePaper(true, false, plugin, new Version());
         
         Assertions.assertTrue(msg.isPrintDebug());
         Assertions.assertFalse(msg.isPlaceholderAPIEnabled());
@@ -79,7 +80,7 @@ public class MessageGesturePaperTest {
     
     @Test
     public void testConstructorWithPrefix() {
-        MessageGesturePaper msg = new MessageGesturePaper("&aTest", true, true, null);
+        MessageGesturePaper msg = new MessageGesturePaper("&aTest", true, true, null, new Version());
         
         Assertions.assertEquals("&aTest", msg.getPrefix());
         Assertions.assertTrue(msg.isPrintDebug());
@@ -89,7 +90,7 @@ public class MessageGesturePaperTest {
     
     @Test
     public void testConstructorWithNullPlugin() {
-        MessageGesturePaper msg = new MessageGesturePaper(false, true, null);
+        MessageGesturePaper msg = new MessageGesturePaper(false, true, null, new Version());
         
         Assertions.assertFalse(msg.isPrintDebug());
         Assertions.assertTrue(msg.isPlaceholderAPIEnabled());
@@ -189,7 +190,7 @@ public class MessageGesturePaperTest {
     @Test
     public void testSendMessageWithAdventurePath() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
         Assertions.assertNotNull(msg.getAdventure());
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!"));
     }
@@ -197,14 +198,14 @@ public class MessageGesturePaperTest {
     @Test
     public void testSendMessageWithAdventurePathAndPrefix() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!", true));
     }
 
     @Test
     public void testSendMessageComponentWithAdventurePath() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin);
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
         Component component = Component.text("Hello Component");
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, component));
     }
@@ -212,8 +213,8 @@ public class MessageGesturePaperTest {
     @Test
     public void testConstructorWithPluginAndPrefix() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&bCustomPrefix", true, true, plugin);
-        Assertions.assertEquals("&bCustomPrefix", msg.getPrefix());
+        MessageGesturePaper msg = new MessageGesturePaper("&bCustomPrefix", true, true, plugin, new Version());
+        Assertions.assertEquals("MockPlugin", msg.getPrefix());
         Assertions.assertTrue(msg.isPrintDebug());
         Assertions.assertTrue(msg.isPlaceholderAPIEnabled());
         Assertions.assertNotNull(msg.getAdventure());
@@ -352,7 +353,7 @@ public class MessageGesturePaperTest {
     
     @Test
     public void testConstructorWithAllNullParameters() {
-        MessageGesturePaper msg = new MessageGesturePaper(false, false, null);
+        MessageGesturePaper msg = new MessageGesturePaper(false, false, null, new Version());
         Assertions.assertNotNull(msg);
         Assertions.assertFalse(msg.isPrintDebug());
         Assertions.assertFalse(msg.isPlaceholderAPIEnabled());
@@ -360,7 +361,7 @@ public class MessageGesturePaperTest {
     
     @Test
     public void testConstructorWithNullPrefix() {
-        MessageGesturePaper msg = new MessageGesturePaper(null, true, false, null);
+        MessageGesturePaper msg = new MessageGesturePaper(null, true, false, null, new Version());
         Assertions.assertNotNull(msg);
         Assertions.assertTrue(msg.isPrintDebug());
         Assertions.assertFalse(msg.isPlaceholderAPIEnabled());
