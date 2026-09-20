@@ -1,5 +1,6 @@
 package com.HeroxWar.HeroxCore.MessageGesture;
 
+import com.HeroxWar.HeroxCore.Utils.Version;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -33,31 +34,23 @@ public class MessageGesturePaper {
     private BukkitAudiences adventure = null;
     private boolean paper = false;
     private JavaPlugin plugin;
+    private Version version;
 
-    public MessageGesturePaper(boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
-        System.out.println("[HeroxCore] MessageGesturePaper Initializing");
-        this.printDebug = printDebug;
-        this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
-        // Initialize an audiences instance for the plugin
-        this.plugin = plugin;
-        if (this.plugin != null) {
-            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + this.plugin.getName() + " &4DEBUG &8>&7>\n\n";
-            this.internalLogger = new ColoredLogger("[" + this.plugin.getName() + "] ");
-            existBukkitAudiences();
-        } else {
-            this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &eHeroxPlugin &4DEBUG &8>&7>\n\n";
-            this.internalLogger = new ColoredLogger("[HeroxPlugin] ");
-        }
+    public MessageGesturePaper(boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin, Version version) {
+        this("HeroxPlugin", printDebug, isPlaceholderAPIEnabled, plugin, version);
     }
 
-    public MessageGesturePaper(String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin) {
-        System.out.println("[HeroxCore] MessageGesturePaper Initializing With Prefix");
+    public MessageGesturePaper(String prefix, boolean printDebug, boolean isPlaceholderAPIEnabled, JavaPlugin plugin, Version version) {
         this.prefix = prefix;
-        this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + prefix + " &4DEBUG &8>&7>\n\n";
+        this.plugin = plugin;
+        if (this.plugin != null) {
+            this.prefix = this.plugin.getName();
+        }
+        this.debugPrefixSuffix = "\n\n&7<&8< &4DEBUG &e" + this.prefix + " &4DEBUG &8>&7>\n\n";
         this.printDebug = printDebug;
         this.isPlaceholderAPIEnabled = isPlaceholderAPIEnabled;
-        internalLogger = new ColoredLogger("[" + prefix + "] ");
-        this.plugin = plugin;
+        this.internalLogger = new ColoredLogger("[" + prefix + "] ");
+        this.version = version;
         // Initialize an audiences instance for the plugin
         if (this.plugin != null) {
             existBukkitAudiences();
@@ -69,51 +62,56 @@ public class MessageGesturePaper {
      * If not set the plugin instance to null for correct error messages
      */
     public void existBukkitAudiences() {
-        System.out.println("Sto cercando BukkitAudiences");
+        if (version.isHigher(26, 1)) {
+            existPaperRichMessage();
+            return;
+        }
+        logDebug("Searching BukkitAudiences");
+
         try {
             Class<?> aClass = Class.forName(
-                "net.kyori.adventure.platform.bukkit.BukkitAudiences"
+                    "net.kyori.adventure.platform.bukkit.BukkitAudiences"
             );
 
-            System.out.println("Found BukkitAudiences");
+            logDebug("Found BukkitAudiences");
 
-            System.out.println("Class       : " + aClass.getName());
-            System.out.println("ClassLoader : " + aClass.getClassLoader());
+            logDebug("Class       : " + aClass.getName());
+            logDebug("ClassLoader : " + aClass.getClassLoader());
 
             ProtectionDomain pd = aClass.getProtectionDomain();
             CodeSource cs = pd.getCodeSource();
 
             if (cs != null) {
-                System.out.println("Loaded from : " + cs.getLocation());
+                logDebug("Loaded from : " + cs.getLocation());
             }
 
             // ClassLoader hierarchy
             ClassLoader cl = aClass.getClassLoader();
 
             while (cl != null) {
-                System.out.println(
-                    "Loader      : " +
-                    cl.getClass().getName() +
-                    " -> " + cl
+                logDebug(
+                        "Loader      : " +
+                                cl.getClass().getName() +
+                                " -> " + cl
                 );
                 cl = cl.getParent();
             }
             this.adventure = BukkitAudiences.create(plugin);
         } catch (ClassNotFoundException ignored) {
-            System.out.println("[HeroxCore] BukkitAudiences not found check for PaperRichMessage");
+            logDebug("[HeroxCore] BukkitAudiences not found check for PaperRichMessage");
             existPaperRichMessage();
         }
     }
 
     public void existPaperRichMessage() {
-        System.out.println("Sto cercando richMessage");
+        logDebug("Searching richMessage");
         try {
             Class<?> aClass = Class.forName("org.bukkit.entity.Player");
             aClass.getMethod("sendRichMessage", Player.class, String.class);
-            System.out.println("Ho trovato richMessage");
+            logDebug("Found richMessage");
             paper = true;
         } catch (Exception ignored) {
-            System.out.println("[HeroxCore] PaperRichMessage not found using sendMessage");
+            logDebug("[HeroxCore] PaperRichMessage not found using sendMessage");
             this.plugin = null;
             paper = false;
         }

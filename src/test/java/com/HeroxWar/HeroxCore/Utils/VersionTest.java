@@ -88,4 +88,29 @@ public class VersionTest {
         Assertions.assertEquals("26", version.getFormattedServerVersion());
     }
 
+    @Test
+    public void toStringTest() {
+        String a = version.toString();
+        System.out.println(a);
+        Assertions.assertEquals("Version{serverVersion='MockBukkit (MC: 26.2)', formattedServerVersion='26.2', splitFormattedServerVersion=[26, 2]}", a);
+    }
+
+    @Test
+    public void isHigher() {
+        version.setServerVersion("MockBukkit (MC: 26.1)");
+        Assertions.assertFalse(version.isHigher(26));
+        Assertions.assertTrue(version.isHigher(27));
+
+        Assertions.assertTrue(version.isHigher(27, 1));
+        Assertions.assertFalse(version.isHigher(26, 1));
+        Assertions.assertTrue(version.isHigher(26, 2));
+
+        version.setServerVersion("MockBukkit (MC: 1.21.10)");
+        Assertions.assertFalse(version.isHigher(21));
+        Assertions.assertTrue(version.isHigher(22));
+
+        Assertions.assertFalse(version.isHigher(21, 10));
+        Assertions.assertTrue(version.isHigher(21, 11));
+    }
+
 }
