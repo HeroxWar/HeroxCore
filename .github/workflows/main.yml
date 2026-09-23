@@ -1,9 +1,10 @@
 name: Release
 
 on:
-  push:
+  pull_request:
     branches:
       - master
+    types: [ closed ]
 
   release:
     types: [published]
