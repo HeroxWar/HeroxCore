@@ -14,6 +14,8 @@ import java.util.List;
 public abstract class MainCommons extends  JavaPlugin {
 
     private boolean mockTest = false;
+    private boolean debug = false;
+    private boolean papi = false;
     private List<String> libraryLegacyMessages = new ArrayList<>();
     private Version version;
     private MessageGesturePaper messageGesturePaper;
@@ -32,7 +34,7 @@ public abstract class MainCommons extends  JavaPlugin {
             new Metrics(javaPlugin, bStatsId);
         }
 
-        messageGesturePaper = new MessageGesturePaper(true, false, javaPlugin, version);
+        messageGesturePaper = new MessageGesturePaper(debug, papi, javaPlugin, version);
 
         for (String message : libraryLegacyMessages) {
             messageGesturePaper.sendMessage(message);
@@ -114,5 +116,23 @@ public abstract class MainCommons extends  JavaPlugin {
 
     public void setMessageGesturePaper(MessageGesturePaper messageGesturePaper) {
         this.messageGesturePaper = messageGesturePaper;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+        messageGesturePaper.setPrintDebug(debug);
+    }
+
+    public boolean isPapi() {
+        return papi;
+    }
+
+    public void setPapi(boolean papi) {
+        this.papi = papi;
+        messageGesturePaper.setPlaceholderAPIEnabled(papi);
     }
 }

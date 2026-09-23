@@ -155,8 +155,8 @@ public class Title {
      * @param player Player
      */
     public void send(Player player) {
-        title = messageGesturePaper.applyColorLegacy(messageGesturePaper.translate(player, title));
-        subtitle = messageGesturePaper.applyColorLegacy(messageGesturePaper.translate(player, subtitle));
+        title = messageGesturePaper.applyColorLegacy(title, player);
+        subtitle = messageGesturePaper.applyColorLegacy(subtitle, player);
         try {
             player.sendTitle(title, subtitle, fadeInTime, stayTime, fadeOutTime);
         } catch (Exception e) {
@@ -184,8 +184,8 @@ public class Title {
      */
     public void sendRich(Player player) {
         try {
-            Component _mainTitle = messageGesturePaper.applyColor(messageGesturePaper.translate(player, title));
-            Component _subtitle = messageGesturePaper.applyColor(messageGesturePaper.translate(player, subtitle));
+            Component _mainTitle = messageGesturePaper.applyColorMiniMessage(title, player);
+            Component _subtitle = messageGesturePaper.applyColorMiniMessage(subtitle, player);
             final net.kyori.adventure.title.Title.Times times = net.kyori.adventure.title.Title.Times.times(Duration.ofMillis(fadeInTime), Duration.ofMillis(stayTime), Duration.ofMillis(fadeOutTime));
 
             final net.kyori.adventure.title.Title title = net.kyori.adventure.title.Title.title(_mainTitle, _subtitle, times);
