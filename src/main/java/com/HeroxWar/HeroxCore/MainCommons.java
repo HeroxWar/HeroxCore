@@ -29,10 +29,13 @@ public abstract class MainCommons extends  JavaPlugin {
         libraryLegacyMessages = loadLibraries(javaPlugin);
     }
 
-    public void onEnableInit(JavaPlugin javaPlugin, String banner, int bStatsId) {
+    public void onEnableInit(JavaPlugin javaPlugin, String banner, int bStatsId, boolean debug, boolean papi) {
         if (mockTest) {
             new Metrics(javaPlugin, bStatsId);
         }
+
+        this.debug = debug;
+        this.papi = papi;
 
         messageGesturePaper = new MessageGesturePaper(debug, papi, javaPlugin, version);
 
@@ -51,6 +54,10 @@ public abstract class MainCommons extends  JavaPlugin {
             messageGesturePaper.sendMessage("&6Server version registered > 1.12");
         }
         messageGesturePaper.sendMessage("Version Detected: &c" + version.getFormattedServerVersion());
+    }
+
+    public void onEnableInit(JavaPlugin javaPlugin, String banner, int bStatsId) {
+        onEnableInit(javaPlugin, banner, bStatsId, false, false);
     }
 
     public void onDisableInit(JavaPlugin javaPlugin) {
