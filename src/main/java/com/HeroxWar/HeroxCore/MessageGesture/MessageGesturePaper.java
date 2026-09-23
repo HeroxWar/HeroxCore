@@ -274,6 +274,9 @@ public class MessageGesturePaper {
     }
 
     public String translate(Player p, String text) {
+        if (p == null) {
+            return text;
+        }
         return translate(Bukkit.getOfflinePlayer(p.getName()), text);
     }
 
