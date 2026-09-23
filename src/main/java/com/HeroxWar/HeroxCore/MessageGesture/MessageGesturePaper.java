@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
@@ -179,7 +178,19 @@ public class MessageGesturePaper {
         }
     }
 
-    public Component applyColor(String message) {
+    public Object applyColor(String message, Player player) {
+        message = translate(player, message);
+        if (adventure != null) {
+            return applyColorMiniMessage(message, player);
+        } else if (paper) {
+            return applyColorMiniMessage(message, player);
+        } else {
+            return applyColorLegacy(message, player);
+        }
+    }
+
+    public Component applyColorMiniMessage(String message, Player player) {
+        message = translate(player, message);
         TextComponent content = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
         String serializedContent = MiniMessage.miniMessage().serialize(content);
         serializedContent = serializedContent.replace("\\<", "<");
@@ -187,7 +198,8 @@ public class MessageGesturePaper {
         return MiniMessage.miniMessage().deserialize(serializedContent);
     }
 
-    public String applyColorLegacy(String message) {
+    public String applyColorLegacy(String message, Player player) {
+        message = translate(player, message);
         Matcher matcher = hexPattern.matcher(message);
         while (matcher.find()) {
             String color = message.substring(matcher.start() + 1, matcher.end());
@@ -228,19 +240,19 @@ public class MessageGesturePaper {
 
     public void sendMessage(Player player, String MESSAGE, boolean usePrefix) {
         if (adventure != null) {
-            Component componentMessage = applyColor(translate(player, (usePrefix ? this.prefix : "") + MESSAGE));
+            Component componentMessage = applyColorMiniMessage((usePrefix ? this.prefix : "") + MESSAGE, player);
             sendMessage(player, componentMessage);
         } else if (paper) {
             try {
                 Class<?> aClass = Class.forName("org.bukkit.entity.Player");
                 java.lang.reflect.Method sendRichMessage = aClass.getMethod("sendRichMessage", Player.class, String.class);
-                sendRichMessage.invoke(null, player, applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+                sendRichMessage.invoke(null, player, applyColorLegacy((usePrefix ? this.prefix : "") + MESSAGE, player));
             } catch (Exception e) {
                 log(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()), Level.SEVERE);
-                player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+                player.sendMessage(applyColorLegacy((usePrefix ? this.prefix : "") + MESSAGE, player));
             }
         } else {
-            player.sendMessage(applyColorLegacy(translate(player, (usePrefix ? this.prefix : "") + MESSAGE)));
+            player.sendMessage(applyColorLegacy((usePrefix ? this.prefix : "") + MESSAGE, player));
         }
     }
 

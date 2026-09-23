@@ -224,37 +224,37 @@ public class MessageGesturePaperTest {
     
     @Test
     public void testApplyColor() {
-        Component result = messageGesturePaper.applyColor("&aGreen &bBlue");
+        Component result = messageGesturePaper.applyColorMiniMessage("&aGreen &bBlue", playerMock);
         Assertions.assertNotNull(result);
     }
     
     @Test
     public void testApplyColorWithHex() {
-        Component result = messageGesturePaper.applyColor("&#FF0000Red");
+        Component result = messageGesturePaper.applyColorMiniMessage("&#FF0000Red", playerMock);
         Assertions.assertNotNull(result);
     }
     
     @Test
     public void testApplyColorWithEscapedChars() {
-        Component result = messageGesturePaper.applyColor("Test \\<escaped\\>");
+        Component result = messageGesturePaper.applyColorMiniMessage("Test \\<escaped\\>", playerMock);
         Assertions.assertNotNull(result);
     }
     
     @Test
     public void testApplyColorLegacy() {
-        String result = messageGesturePaper.applyColorLegacy("&aGreen &bBlue");
+        String result = messageGesturePaper.applyColorLegacy("&aGreen &bBlue", playerMock);
         Assertions.assertEquals("§aGreen §bBlue", result);
     }
     
     @Test
     public void testApplyColorLegacyWithHex() {
-        String result = messageGesturePaper.applyColorLegacy("&#FF0000Red &aGreen");
+        String result = messageGesturePaper.applyColorLegacy("&#FF0000Red &aGreen", playerMock);
         Assertions.assertTrue(result.contains("Red") && result.contains("Green"));
     }
     
     @Test
     public void testApplyColorLegacyWithNoColors() {
-        String result = messageGesturePaper.applyColorLegacy("Plain text");
+        String result = messageGesturePaper.applyColorLegacy("Plain text", playerMock);
         Assertions.assertEquals("Plain text", result);
     }
     
