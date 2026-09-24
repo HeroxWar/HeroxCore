@@ -97,20 +97,22 @@ public class VersionTest {
 
     @Test
     public void isHigher() {
-        version.setServerVersion("MockBukkit (MC: 26.1)");
+        version.setServerVersion("MockBukkit (MC: 26.2)");
         Assertions.assertFalse(version.isHigher(26));
-        Assertions.assertTrue(version.isHigher(27));
+        Assertions.assertTrue(version.isHigher(25));
+        Assertions.assertFalse(version.isHigher(27));
 
-        Assertions.assertTrue(version.isHigher(27, 1));
-        Assertions.assertFalse(version.isHigher(26, 1));
-        Assertions.assertTrue(version.isHigher(26, 2));
+        Assertions.assertFalse(version.isHigher(27, 1));
+        Assertions.assertTrue(version.isHigher(26, 1));
+        Assertions.assertFalse(version.isHigher(26, 2));
 
-        version.setServerVersion("MockBukkit (MC: 1.21.10)");
+        version.setServerVersion("MockBukkit (MC: 1.21.11)");
         Assertions.assertFalse(version.isHigher(21));
-        Assertions.assertTrue(version.isHigher(22));
+        Assertions.assertTrue(version.isHigher(20));
+        Assertions.assertFalse(version.isHigher(22));
 
-        Assertions.assertFalse(version.isHigher(21, 10));
-        Assertions.assertTrue(version.isHigher(21, 11));
+        Assertions.assertTrue(version.isHigher(21, 10));
+        Assertions.assertFalse(version.isHigher(21, 11));
     }
 
 }

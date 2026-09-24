@@ -69,8 +69,10 @@ public class MessageGesturePaperTest {
     @Test
     public void testConstructorWithPlugin() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper(true, false, plugin, new Version());
-        
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        MessageGesturePaper msg = new MessageGesturePaper(true, false, plugin, version);
+
         Assertions.assertTrue(msg.isPrintDebug());
         Assertions.assertFalse(msg.isPlaceholderAPIEnabled());
         Assertions.assertNotNull(msg.getAdventure());
@@ -190,7 +192,10 @@ public class MessageGesturePaperTest {
     @Test
     public void testSendMessageWithAdventurePath() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, version);
+        System.out.println(new Version().getServerVersion());
         Assertions.assertNotNull(msg.getAdventure());
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!"));
     }
@@ -198,14 +203,18 @@ public class MessageGesturePaperTest {
     @Test
     public void testSendMessageWithAdventurePathAndPrefix() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, version);
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, "&eHello Adventure!", true));
     }
 
     @Test
     public void testSendMessageComponentWithAdventurePath() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, new Version());
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, version);
         Component component = Component.text("Hello Component");
         Assertions.assertDoesNotThrow(() -> msg.sendMessage(playerMock, component));
     }
@@ -213,7 +222,9 @@ public class MessageGesturePaperTest {
     @Test
     public void testConstructorWithPluginAndPrefix() {
         PluginMock plugin = MockBukkit.createMockPlugin();
-        MessageGesturePaper msg = new MessageGesturePaper("&bCustomPrefix", true, true, plugin, new Version());
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        MessageGesturePaper msg = new MessageGesturePaper("&bCustomPrefix", true, true, plugin, version);
         Assertions.assertEquals("MockPlugin", msg.getPrefix());
         Assertions.assertTrue(msg.isPrintDebug());
         Assertions.assertTrue(msg.isPlaceholderAPIEnabled());
@@ -435,6 +446,14 @@ public class MessageGesturePaperTest {
             "Il messaggio non contiene il prefisso atteso: " + capturedMessage);
         Assertions.assertTrue(capturedMessage.contains("Red &#00FF00Green &#0000FFBlue console message"), 
             "Il messaggio non contiene il contenuto atteso: " + capturedMessage);
+    }
+
+    @Test
+    public void testMessageGestureWithDifferentVersion() {
+        PluginMock plugin = MockBukkit.createMockPlugin();
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.2)");
+        MessageGesturePaper msg = new MessageGesturePaper("&aPrefix", false, false, plugin, version);
     }
 
 }

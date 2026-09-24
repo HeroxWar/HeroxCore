@@ -67,9 +67,9 @@ public class Version {
 
     public boolean isHigher(int version) {
         if (splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
-            return version > Integer.parseInt(splitFormattedServerVersion[1]);
+            return Integer.parseInt(splitFormattedServerVersion[1]) > version;
         } else {
-            return version > Integer.parseInt(splitFormattedServerVersion[0]);
+            return Integer.parseInt(splitFormattedServerVersion[0]) > version;
         }
     }
 
@@ -79,9 +79,9 @@ public class Version {
             return true;
         } else {
             if (splitFormattedServerVersion[0].equalsIgnoreCase("1")) {
-                return subversion > Integer.parseInt(splitFormattedServerVersion[2]);
+                return Integer.parseInt(splitFormattedServerVersion[1]) == version && Integer.parseInt(splitFormattedServerVersion[2]) > subversion;
             } else {
-                return subversion > Integer.parseInt(splitFormattedServerVersion[1]);
+                return Integer.parseInt(splitFormattedServerVersion[0]) == version && Integer.parseInt(splitFormattedServerVersion[1]) > subversion;
             }
         }
     }

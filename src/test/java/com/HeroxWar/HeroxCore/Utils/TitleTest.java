@@ -29,9 +29,11 @@ public class TitleTest {
     public void setUp() {
         serverMock = MockBukkit.mock();
         playerMock = serverMock.addPlayer();
-        messageGesturePaper = new MessageGesturePaper("&c&lTest", false, false, null, new Version());
+        Version version = new Version();
+        version.setServerVersion("MockBukkit (MC: 26.0)");
+        messageGesturePaper = new MessageGesturePaper("&c&lTest", false, false, null, version);
         PluginMock plugin = MockBukkit.createMockPlugin();
-        msgWithPlugin = new MessageGesturePaper(true, false, plugin, new Version());
+        msgWithPlugin = new MessageGesturePaper(true, false, plugin, version);
 
         logMessages = new ArrayList<>();
         logHandler = new TestLogHandler(logMessages);
